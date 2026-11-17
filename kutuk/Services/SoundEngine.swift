@@ -27,6 +27,18 @@ class SoundEngine: ObservableObject {
     /// Current sound pack
     private var currentPack: SoundPack?
     
+    // MARK: - Mouse Audio Properties
+    
+    private var mousePlayerNodes: [AVAudioPlayerNode] = []
+    private var mouseSoundBuffers: [String: [AVAudioPCMBuffer]] = [:]
+    private var mousePlayerOutputFormat: AVAudioFormat?
+    private var currentMousePack: MouseSoundPack?
+    private let mousePoolSize = 4
+    private var currentMousePlayerIndex = 0
+    
+    /// Mouse Volume (0.0 to 1.0)
+    @Published var mouseVolume: Float = 0.8
+    
     /// Volume (0.0 to 1.0)
     @Published var volume: Float = 0.8 {
         didSet {
@@ -53,11 +65,18 @@ class SoundEngine: ObservableObject {
     // MARK: - Setup
     
     private func setupAudioEngine() {
-        // Create a pool of player nodes for polyphony
+        // Create a pool of player nodes for keyboard polyphony
         for _ in 0..<playerPoolSize {
             let playerNode = AVAudioPlayerNode()
             audioEngine.attach(playerNode)
             playerNodes.append(playerNode)
+        }
+        
+        // Create a dedicated pool of player nodes for mouse polyphony
+        for _ in 0..<mousePoolSize {
+            let playerNode = AVAudioPlayerNode()
+            audioEngine.attach(playerNode)
+            mousePlayerNodes.append(playerNode)
         }
     }
     
@@ -106,6 +125,48 @@ class SoundEngine: ObservableObject {
         print("Loaded sound pack: \(pack.name) with \(soundBuffers.count) sound groups")
     }
     
+    // MARK: - Mouse Sound Pack Loading
+    
+    /// Load and buffer all sounds from a mouse sound pack
+    func loadMouseSoundPack(_ pack: MouseSoundPack) {
+        guard pack.id != currentMousePack?.id else { return }
+        
+        currentMousePack = pack
+        mouseSoundBuffers.removeAll()
+        var playbackFormat: AVAudioFormat?
+        
+        for button in MouseButton.allCases {
+            for event in [MouseEvent.press, MouseEvent.release] {
+                let key = mouseBufferKey(for: button, event: event)
+                let urls = pack.soundURLs(for: button, event: event)
+                
+                var buffers: [AVAudioPCMBuffer] = []
+                for url in urls {
+                    if let buffer = loadAudioBuffer(from: url) {
+                        if playbackFormat == nil {
+                            playbackFormat = buffer.format
+                        }
+                        
+                        if let playbackFormat, formatsMatch(buffer.format, playbackFormat) {
+                            buffers.append(buffer)
+                        }
+                    }
+                }
+                
+                if !buffers.isEmpty {
+                    mouseSoundBuffers[key] = buffers
+                }
+            }
+        }
+        
+        if let playbackFormat {
+            configureMousePlayerNodes(for: playbackFormat)
+            startAudioEngineIfNeeded()
+        }
+        
+        print("Loaded mouse sound pack: \(pack.name) with \(mouseSoundBuffers.count) groups")
+    }
+    
     private func loadAudioBuffer(from url: URL) -> AVAudioPCMBuffer? {
         do {
             let audioFile = try AVAudioFile(forReading: url)
@@ -130,6 +191,24 @@ class SoundEngine: ObservableObject {
     
     private func bufferKey(for keyType: KeyType, event: KeyEvent) -> String {
         "\(keyType.rawValue)_\(event == .press ? "press" : "release")"
+    }
+    
+    private func mouseBufferKey(for button: MouseButton, event: MouseEvent) -> String {
+        "mouse_\(button.rawValue)_\(event == .press ? "press" : "release")"
+    }
+    
+    private func configureMousePlayerNodes(for format: AVAudioFormat) {
+        guard !formatsMatch(mousePlayerOutputFormat, format) else { return }
+        
+        audioEngine.stop()
+        
+        for player in mousePlayerNodes {
+            player.stop()
+            audioEngine.disconnectNodeOutput(player)
+            audioEngine.connect(player, to: mixerNode, format: format)
+        }
+        
+        mousePlayerOutputFormat = format
     }
     
     private func configurePlayerNodes(for format: AVAudioFormat) {
@@ -213,6 +292,49 @@ class SoundEngine: ObservableObject {
         // Slight delay then play release sound
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             self?.playSound(for: .regular, event: .release)
+        }
+    }
+    
+    /// Play a sound for a mouse button click or release
+    func playMouseSound(for button: MouseButton, event: MouseEvent) {
+        let key = mouseBufferKey(for: button, event: event)
+        
+        guard let buffers = mouseSoundBuffers[key], !buffers.isEmpty else {
+            // Fall back to left button sound
+            if button != .left {
+                playMouseSound(for: .left, event: event)
+            }
+            return
+        }
+        
+        startAudioEngineIfNeeded()
+        
+        let buffer = buffers.randomElement()!
+        
+        guard !mousePlayerNodes.isEmpty else { return }
+        let player = mousePlayerNodes[currentMousePlayerIndex]
+        currentMousePlayerIndex = (currentMousePlayerIndex + 1) % mousePoolSize
+        
+        player.stop()
+        
+        let pitchVariation = Float.random(in: 0.97...1.03)
+        let volumeVariation = Float.random(in: 0.92...1.0)
+        
+        player.volume = mouseVolume * volumeVariation
+        player.rate = pitchVariation
+        
+        player.scheduleBuffer(buffer, at: nil, options: .interrupts, completionHandler: nil)
+        
+        if !player.isPlaying {
+            player.play()
+        }
+    }
+    
+    /// Play a preview sound for the current mouse pack
+    func playMousePreview() {
+        playMouseSound(for: .left, event: .press)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.08) { [weak self] in
+            self?.playMouseSound(for: .left, event: .release)
         }
     }
     

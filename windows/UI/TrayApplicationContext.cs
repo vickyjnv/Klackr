@@ -13,20 +13,28 @@ namespace Klackr.UI
         private readonly NotifyIcon _trayIcon;
         private readonly SoundEngine _soundEngine;
         private readonly KeyboardHook _keyboardHook;
+        private readonly MouseHook _mouseHook;
         private readonly HotkeyManager _hotkeyManager;
 
         private ToolStripMenuItem _enabledMenuItem = null!;
+        private ToolStripMenuItem _mouseEnabledMenuItem = null!;
         private ToolStripMenuItem _startupMenuItem = null!;
 
         public TrayApplicationContext()
         {
             _soundEngine = new SoundEngine();
             _keyboardHook = new KeyboardHook();
+            _mouseHook = new MouseHook();
             _hotkeyManager = new HotkeyManager();
 
             _keyboardHook.OnKeyEvent += (keyType, keyEvent) =>
             {
                 _soundEngine.PlaySound(keyType, keyEvent);
+            };
+
+            _mouseHook.OnMouseEvent += (button, mouseEvent) =>
+            {
+                _soundEngine.PlayMouseSound(button, mouseEvent);
             };
 
             _hotkeyManager.OnHotkeyPressed += ToggleEnabled;
@@ -129,6 +137,37 @@ namespace Klackr.UI
 
             menu.Items.Add(new ToolStripSeparator());
 
+            // Mouse Clicks Toggle
+            _mouseEnabledMenuItem = new ToolStripMenuItem("Mouse Clicks", null, (s, e) => ToggleMouseEnabled())
+            {
+                Checked = _soundEngine.IsMouseEnabled
+            };
+            menu.Items.Add(_mouseEnabledMenuItem);
+
+            // Mouse Pack Submenu
+            var mousePackMenu = new ToolStripMenuItem("Mouse Sound Pack");
+            var mousePacks = new (string Name, MouseSoundPackType Type)[]
+            {
+                ("Classic Omron Microswitch", MouseSoundPackType.ClassicOmron),
+                ("Logitech G Pro Superlight", MouseSoundPackType.LogitechSuperlight),
+                ("Razer Optical Switch", MouseSoundPackType.RazerOptical),
+                ("Glorious Model O", MouseSoundPackType.GloriousModelO),
+                ("Silent Office Tactile", MouseSoundPackType.SilentOffice)
+            };
+
+            foreach (var mp in mousePacks)
+            {
+                var item = new ToolStripMenuItem(mp.Name, null, (s, e) => SetMouseSoundPack(mp.Type))
+                {
+                    Checked = _soundEngine.CurrentMousePack == mp.Type,
+                    Tag = mp.Type
+                };
+                mousePackMenu.DropDownItems.Add(item);
+            }
+            menu.Items.Add(mousePackMenu);
+
+            menu.Items.Add(new ToolStripSeparator());
+
             // Startup Submenu
             _startupMenuItem = new ToolStripMenuItem("Launch at Windows Startup", null, (s, e) => ToggleStartup())
             {
@@ -192,6 +231,27 @@ namespace Klackr.UI
             }
         }
 
+        private void ToggleMouseEnabled()
+        {
+            _soundEngine.IsMouseEnabled = !_soundEngine.IsMouseEnabled;
+            _mouseEnabledMenuItem.Checked = _soundEngine.IsMouseEnabled;
+        }
+
+        private void SetMouseSoundPack(MouseSoundPackType pack)
+        {
+            _soundEngine.LoadMouseSoundPack(pack);
+            if (_trayIcon.ContextMenuStrip?.Items[6] is ToolStripMenuItem mouseMenu)
+            {
+                foreach (ToolStripItem item in mouseMenu.DropDownItems)
+                {
+                    if (item is ToolStripMenuItem menuItem && menuItem.Tag is MouseSoundPackType itemType)
+                    {
+                        menuItem.Checked = itemType == pack;
+                    }
+                }
+            }
+        }
+
         private void ToggleStartup()
         {
             var newState = !StartupManager.IsLaunchAtStartupEnabled();
@@ -203,6 +263,7 @@ namespace Klackr.UI
         {
             _trayIcon.Visible = false;
             _keyboardHook.Dispose();
+            _mouseHook.Dispose();
             _hotkeyManager.Dispose();
             _soundEngine.Dispose();
             _trayIcon.Dispose();

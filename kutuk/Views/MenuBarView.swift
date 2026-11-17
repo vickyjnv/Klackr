@@ -42,6 +42,10 @@ struct MenuBarView: View {
 
             Divider().padding(.vertical, 4)
 
+            mouseSection
+
+            Divider().padding(.vertical, 4)
+
             settingsSection
 
             Divider().padding(.vertical, 4)
@@ -177,6 +181,85 @@ struct MenuBarView: View {
             .buttonStyle(.plain)
             .padding(.horizontal, 12)
             .padding(.top, 4)
+        }
+    }
+
+    // MARK: - Mouse Section
+
+    private var mouseSection: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Button {
+                settings.toggleMouseSound()
+            } label: {
+                HStack {
+                    Image(systemName: settings.isMouseSoundEnabled ? "checkmark.circle.fill" : "circle")
+                        .foregroundColor(settings.isMouseSoundEnabled ? .blue : .secondary)
+                        .font(.system(size: 14))
+
+                    Text("Mouse Clicks")
+                        .font(.system(size: 12, weight: .semibold))
+
+                    Spacer()
+
+                    Image(systemName: "cursorarrow.click.2")
+                        .font(.system(size: 11))
+                        .foregroundColor(.secondary)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 3)
+
+            if settings.isMouseSoundEnabled {
+                HStack(spacing: 8) {
+                    Image(systemName: "speaker.wave.1.fill")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+
+                    Slider(value: $settings.mouseVolume, in: 0...1) { _ in
+                        soundEngine.mouseVolume = Float(settings.mouseVolume)
+                    }
+                    .controlSize(.mini)
+
+                    Text("\(Int(settings.mouseVolume * 100))%")
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundColor(.secondary)
+                        .frame(width: 28, alignment: .trailing)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 2)
+
+                ForEach(MouseSoundPack.visiblePacks) { pack in
+                    Button {
+                        settings.selectMouseSoundPack(pack)
+                        soundEngine.loadMouseSoundPack(pack)
+                        soundEngine.playMousePreview()
+                    } label: {
+                        HStack {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: 11, weight: .semibold))
+                                .frame(width: 16)
+                                .opacity(settings.selectedMouseSoundPackId == pack.id ? 1 : 0)
+
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text(pack.name)
+                                    .font(.system(size: 12))
+
+                                Text(pack.description)
+                                    .font(.system(size: 10))
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 2)
+                }
+            }
         }
     }
 

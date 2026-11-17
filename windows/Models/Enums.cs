@@ -24,4 +24,26 @@ namespace Klackr.Models
         ToprePurple,
         EverglideOreo
     }
+
+    public enum MouseButton
+    {
+        Left,
+        Right,
+        Middle
+    }
+
+    public enum MouseEventType
+    {
+        Press,
+        Release
+    }
+
+    public enum MouseSoundPackType
+    {
+        ClassicOmron,
+        LogitechSuperlight,
+        RazerOptical,
+        GloriousModelO,
+        SilentOffice
+    }
 }

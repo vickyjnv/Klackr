@@ -45,6 +45,9 @@ class SettingsManager: ObservableObject {
         static let isEnabled = "isEnabled"
         static let volume = "volume"
         static let selectedSoundPackId = "selectedSoundPackId"
+        static let isMouseSoundEnabled = "isMouseSoundEnabled"
+        static let mouseVolume = "mouseVolume"
+        static let selectedMouseSoundPackId = "selectedMouseSoundPackId"
         static let hotKeyKeyCode = "hotKeyKeyCode"
         static let hotKeyModifierPreset = "hotKeyModifierPreset"
     }
@@ -66,6 +69,24 @@ class SettingsManager: ObservableObject {
     @Published var selectedSoundPackId: String {
         didSet {
             defaults.set(selectedSoundPackId, forKey: Keys.selectedSoundPackId)
+        }
+    }
+    
+    @Published var isMouseSoundEnabled: Bool {
+        didSet {
+            defaults.set(isMouseSoundEnabled, forKey: Keys.isMouseSoundEnabled)
+        }
+    }
+    
+    @Published var mouseVolume: Double {
+        didSet {
+            defaults.set(mouseVolume, forKey: Keys.mouseVolume)
+        }
+    }
+    
+    @Published var selectedMouseSoundPackId: String {
+        didSet {
+            defaults.set(selectedMouseSoundPackId, forKey: Keys.selectedMouseSoundPackId)
         }
     }
     
@@ -93,6 +114,10 @@ class SettingsManager: ObservableObject {
         SoundPack.visiblePacks.first { $0.id == selectedSoundPackId } ?? .defaultPack
     }
     
+    var selectedMouseSoundPack: MouseSoundPack {
+        MouseSoundPack.visiblePacks.first { $0.id == selectedMouseSoundPackId } ?? .defaultMousePack
+    }
+    
     var hotKeyShortcut: HotKeyShortcut {
         HotKeyShortcut(
             keyCode: UInt32(hotKeyKeyCode),
@@ -114,11 +139,20 @@ class SettingsManager: ObservableObject {
         self.volume = defaults.object(forKey: Keys.volume) as? Double ?? 0.8
         let savedSoundPackId = defaults.string(forKey: Keys.selectedSoundPackId)
         self.selectedSoundPackId = Self.resolvedSoundPackId(savedSoundPackId)
+        
+        self.isMouseSoundEnabled = defaults.object(forKey: Keys.isMouseSoundEnabled) as? Bool ?? true
+        self.mouseVolume = defaults.object(forKey: Keys.mouseVolume) as? Double ?? 0.8
+        let savedMousePackId = defaults.string(forKey: Keys.selectedMouseSoundPackId)
+        self.selectedMouseSoundPackId = Self.resolvedMouseSoundPackId(savedMousePackId)
+        
         self.hotKeyKeyCode = defaults.object(forKey: Keys.hotKeyKeyCode) as? Int ?? Int(HotKeyShortcut.defaultShortcut.keyCode)
         self.hotKeyModifierPresetRawValue = defaults.string(forKey: Keys.hotKeyModifierPreset) ?? HotKeyShortcut.defaultShortcut.modifierPreset.rawValue
         
         if selectedSoundPackId != savedSoundPackId {
             defaults.set(selectedSoundPackId, forKey: Keys.selectedSoundPackId)
+        }
+        if selectedMouseSoundPackId != savedMousePackId {
+            defaults.set(selectedMouseSoundPackId, forKey: Keys.selectedMouseSoundPackId)
         }
         
         // Check current launch at login status without triggering didSet
@@ -129,6 +163,14 @@ class SettingsManager: ObservableObject {
     
     func selectSoundPack(_ pack: SoundPack) {
         selectedSoundPackId = pack.id
+    }
+    
+    func selectMouseSoundPack(_ pack: MouseSoundPack) {
+        selectedMouseSoundPackId = pack.id
+    }
+    
+    func toggleMouseSound() {
+        isMouseSoundEnabled.toggle()
     }
     
     func toggleEnabled() {
@@ -153,5 +195,17 @@ class SettingsManager: ObservableObject {
         }
         
         return SoundPack.defaultPack.id
+    }
+    
+    private static func resolvedMouseSoundPackId(_ savedId: String?) -> String {
+        guard let savedId else {
+            return MouseSoundPack.defaultMousePack.id
+        }
+        
+        if MouseSoundPack.visiblePacks.contains(where: { $0.id == savedId }) {
+            return savedId
+        }
+        
+        return MouseSoundPack.defaultMousePack.id
     }
 }

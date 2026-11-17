@@ -1,22 +1,35 @@
 # Klackr
 
-Mechanical keyboard sounds for your Mac. Klackr plays satisfying Cherry MX Brown and Cherry MX Blue sounds as you type, running quietly in your menu bar.
+Mechanical keyboard and mouse click sound simulator for macOS and Windows. Klackr plays satisfying tactile keystrokes and microswitch mouse clicks as you type and navigate, running quietly in your menu bar or system tray.
 
 <p align="center">
   <img src="assets/klackr_icon_1024.png" alt="Klackr App Icon" width="160">
 </p>
 
 ![macOS](https://img.shields.io/badge/macOS-14.0%2B-blue)
+![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Features
 
-- Cherry MX Brown and Cherry MX Blue mechanical keyboard sounds with natural variation
-- Universal Binary: runs natively on both Apple Silicon and Intel Macs
-- Menu bar app with no dock icon clutter
-- Global hotkey toggle (default: Option+Command+K)
-- Volume control and sound pack selection
-- Launch at Login support
+- **6 Bundled Mechanical Keyboard Profiles**:
+  - Cherry MX Brown (Tactile, warm)
+  - Cherry MX Blue (Clicky, sharp)
+  - Cherry MX Red (Smooth linear)
+  - Cherry MX Black (Heavy vintage linear)
+  - Topre Purple Hybrid (Deep electro-capacitive thock)
+  - Everglide Oreo (Snappy modern tactile)
+- **Mechanical & Optical Mouse Click Sounds**:
+  - Classic Omron Microswitch (Dual-stage press & release)
+  - Logitech G Pro Superlight (Snappy esports tactile)
+  - Razer Optical Switch (Fast punchy actuation)
+  - Glorious Model O (Lightweight Kailh click)
+  - Silent Office Tactile (Muted soft focus click)
+- **Independent Controls**: Toggle keyboard sounds and mouse clicks separately, with individual volume controls for each.
+- **In-App Sound Pack Hub**: Preview switches, import custom sound pack folders, reveal your local packs folder in Finder, and browse community packs.
+- **Ultra-Low Latency**: Dedicated polyphony player pools for keyboard typing and mouse clicks.
+- **Universal Binary (macOS)**: Native Apple Silicon (M1/M2/M3/M4) and Intel x86_64 support.
+- **Windows Tray App**: Native C# .NET 8 WASAPI app with global hotkeys and system tray controls.
 
 ## Install
 

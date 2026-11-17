@@ -23,6 +23,9 @@ class KeyboardMonitor: ObservableObject {
 
     /// Callback for key events
     var onKeyEvent: ((KeyType, KeyEvent) -> Void)?
+    
+    /// Callback for mouse events
+    var onMouseEvent: ((MouseButton, MouseEvent) -> Void)?
 
     // MARK: - Initialization
 
@@ -71,9 +74,16 @@ class KeyboardMonitor: ObservableObject {
             return true
         }
 
-        print("🎹 Creating event tap...")
+        print("🎹 Creating event tap for keyboard & mouse...")
 
-        let eventMask = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue)
+        let keyboardMask: UInt64 = (1 << CGEventType.keyDown.rawValue) | (1 << CGEventType.keyUp.rawValue)
+        let mouseMask: UInt64 = (1 << CGEventType.leftMouseDown.rawValue) |
+                                (1 << CGEventType.leftMouseUp.rawValue) |
+                                (1 << CGEventType.rightMouseDown.rawValue) |
+                                (1 << CGEventType.rightMouseUp.rawValue) |
+                                (1 << CGEventType.otherMouseDown.rawValue) |
+                                (1 << CGEventType.otherMouseUp.rawValue)
+        let eventMask = keyboardMask | mouseMask
 
         let callback: CGEventTapCallBack = { proxy, type, event, refcon -> Unmanaged<CGEvent>? in
             guard let refcon = refcon else { return Unmanaged.passUnretained(event) }
@@ -88,12 +98,52 @@ class KeyboardMonitor: ObservableObject {
                 return Unmanaged.passUnretained(event)
             }
 
-            let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-            let keyType = monitor.classifyKey(Int(keyCode))
-            let keyEvent: KeyEvent = type == .keyDown ? .press : .release
+            switch type {
+            case .keyDown, .keyUp:
+                let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
+                let keyType = monitor.classifyKey(Int(keyCode))
+                let keyEvent: KeyEvent = type == .keyDown ? .press : .release
 
-            DispatchQueue.main.async {
-                monitor.onKeyEvent?(keyType, keyEvent)
+                DispatchQueue.main.async {
+                    monitor.onKeyEvent?(keyType, keyEvent)
+                }
+
+            case .leftMouseDown:
+                DispatchQueue.main.async {
+                    monitor.onMouseEvent?(.left, .press)
+                }
+
+            case .leftMouseUp:
+                DispatchQueue.main.async {
+                    monitor.onMouseEvent?(.left, .release)
+                }
+
+            case .rightMouseDown:
+                DispatchQueue.main.async {
+                    monitor.onMouseEvent?(.right, .press)
+                }
+
+            case .rightMouseUp:
+                DispatchQueue.main.async {
+                    monitor.onMouseEvent?(.right, .release)
+                }
+
+            case .otherMouseDown:
+                let buttonNumber = event.getIntegerValueField(.mouseEventButtonNumber)
+                let btn: MouseButton = buttonNumber == 2 ? .middle : .left
+                DispatchQueue.main.async {
+                    monitor.onMouseEvent?(btn, .press)
+                }
+
+            case .otherMouseUp:
+                let buttonNumber = event.getIntegerValueField(.mouseEventButtonNumber)
+                let btn: MouseButton = buttonNumber == 2 ? .middle : .left
+                DispatchQueue.main.async {
+                    monitor.onMouseEvent?(btn, .release)
+                }
+
+            default:
+                break
             }
 
             return Unmanaged.passUnretained(event)

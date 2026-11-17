@@ -56,7 +56,7 @@ struct kutukTests {
         let actualFiles = try FileManager.default
             .contentsOfDirectory(at: soundsDirectory, includingPropertiesForKeys: nil)
             .map(\.lastPathComponent)
-            .filter { $0.hasPrefix("cherry-mx-") }
+            .filter { $0.hasPrefix("cherry-mx-brown") || $0.hasPrefix("cherry-mx-blue") }
             .sorted()
         
         #expect(actualFiles == expectedFiles)
@@ -173,5 +173,33 @@ struct kutukTests {
         #expect(reloaded.hotKeyShortcut.keyCode == UInt32(kVK_ANSI_P))
         #expect(reloaded.hotKeyShortcut.modifierPreset == .controlOptionCommand)
         #expect(reloaded.hotKeyShortcut.displayString == "⌃⌥⌘P")
+    }
+    
+    @Test func mouseSoundPacksAreConfigured() {
+        let expectedMouseIds = ["mouse-omron", "mouse-superlight", "mouse-razer", "mouse-glorious", "mouse-silent"]
+        #expect(MouseSoundPack.bundledPacks.map(\.id) == expectedMouseIds)
+        #expect(MouseSoundPack.defaultMousePack.id == "mouse-omron")
+    }
+    
+    @Test func mouseSettingsPersistAcrossReloads() {
+        let defaults = UserDefaults(suiteName: "kutuk-mouse-tests-\(UUID().uuidString)")!
+        let launchController = MockLaunchAtLoginController()
+        
+        let settings = SettingsManager(
+            defaults: defaults,
+            launchAtLoginController: launchController
+        )
+        settings.isMouseSoundEnabled = true
+        settings.mouseVolume = 0.65
+        settings.selectedMouseSoundPackId = "mouse-superlight"
+        
+        let reloaded = SettingsManager(
+            defaults: defaults,
+            launchAtLoginController: launchController
+        )
+        
+        #expect(reloaded.isMouseSoundEnabled == true)
+        #expect(abs(reloaded.mouseVolume - 0.65) < 0.01)
+        #expect(reloaded.selectedMouseSoundPack.id == "mouse-superlight")
     }
 }

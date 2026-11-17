@@ -33,9 +33,17 @@ final class AppCoordinator {
         soundEngine.volume = Float(settings.volume)
         soundEngine.loadSoundPack(settings.selectedSoundPack)
         
+        soundEngine.mouseVolume = Float(settings.mouseVolume)
+        soundEngine.loadMouseSoundPack(settings.selectedMouseSoundPack)
+        
         keyboardMonitor.onKeyEvent = { [weak self] keyType, keyEvent in
             guard let self, self.settings.isEnabled else { return }
             self.soundEngine.playSound(for: keyType, event: keyEvent)
+        }
+        
+        keyboardMonitor.onMouseEvent = { [weak self] button, mouseEvent in
+            guard let self, self.settings.isEnabled, self.settings.isMouseSoundEnabled else { return }
+            self.soundEngine.playMouseSound(for: button, event: mouseEvent)
         }
 
         hotKeyManager.onHotKeyPressed = { [weak self] in
@@ -68,11 +76,26 @@ final class AppCoordinator {
             }
             .store(in: &cancellables)
         
+        settings.$mouseVolume
+            .dropFirst()
+            .sink { [weak self] volume in
+                self?.soundEngine.mouseVolume = Float(volume)
+            }
+            .store(in: &cancellables)
+        
         settings.$selectedSoundPackId
             .dropFirst()
             .sink { [weak self] _ in
                 guard let self else { return }
                 self.soundEngine.loadSoundPack(self.settings.selectedSoundPack)
+            }
+            .store(in: &cancellables)
+        
+        settings.$selectedMouseSoundPackId
+            .dropFirst()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.soundEngine.loadMouseSoundPack(self.settings.selectedMouseSoundPack)
             }
             .store(in: &cancellables)
         

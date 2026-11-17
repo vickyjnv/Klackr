@@ -206,3 +206,153 @@ extension SoundPack {
         allPacks
     }
 }
+
+// MARK: - Mouse Input & Sound Models
+
+enum MouseButton: String, CaseIterable, Identifiable {
+    case left
+    case right
+    case middle
+    
+    var id: String { rawValue }
+}
+
+enum MouseEvent: String, CaseIterable {
+    case press
+    case release
+}
+
+struct MouseSoundPack: Identifiable, Hashable {
+    let id: String
+    let name: String
+    let description: String
+    var isCustom: Bool = false
+    var customDirectoryURL: URL? = nil
+    
+    static var customPacksDirectory: URL {
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let dir = appSupport.appendingPathComponent("Klackr/MouseSoundPacks", isDirectory: true)
+        if !FileManager.default.fileExists(atPath: dir.path) {
+            try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        }
+        return dir
+    }
+    
+    func soundURLs(for button: MouseButton, event: MouseEvent) -> [URL] {
+        let eventSuffix = event == .press ? "press" : "release"
+        let prefix = "\(id)_\(button.rawValue)_\(eventSuffix)"
+        let extensions = ["mp3", "wav", "caf", "ogg", "flac"]
+        
+        var urls: [URL] = []
+        
+        let searchDirectories: [URL] = [
+            customDirectoryURL,
+            Self.customPacksDirectory.appendingPathComponent(id),
+            Self.customPacksDirectory
+        ].compactMap { $0 }
+        
+        for dir in searchDirectories {
+            guard FileManager.default.fileExists(atPath: dir.path) else { continue }
+            for ext in extensions {
+                let fileURL = dir.appendingPathComponent("\(prefix).\(ext)")
+                if FileManager.default.fileExists(atPath: fileURL.path) {
+                    urls.append(fileURL)
+                    break
+                }
+            }
+            if !urls.isEmpty { break }
+        }
+        
+        if urls.isEmpty {
+            for ext in extensions {
+                if let url = Bundle.main.url(forResource: prefix, withExtension: ext) {
+                    urls.append(url)
+                    break
+                }
+            }
+        }
+        
+        // Fall back to left button sound if specific button sound not found
+        if urls.isEmpty && button != .left {
+            return soundURLs(for: .left, event: event)
+        }
+        
+        return urls
+    }
+}
+
+// MARK: - Bundled Mouse Sound Packs
+
+extension MouseSoundPack {
+    static let omron = MouseSoundPack(
+        id: "mouse-omron",
+        name: "Classic Omron",
+        description: "Balanced, crisp dual-stage mechanical microswitch"
+    )
+    
+    static let superlight = MouseSoundPack(
+        id: "mouse-superlight",
+        name: "Logitech G Pro Superlight",
+        description: "Tactile, sharp esports gaming microswitch"
+    )
+    
+    static let razerOptical = MouseSoundPack(
+        id: "mouse-razer",
+        name: "Razer Optical Switch",
+        description: "Ultra-fast, punchy optical actuation click"
+    )
+    
+    static let glorious = MouseSoundPack(
+        id: "mouse-glorious",
+        name: "Glorious Model O",
+        description: "Lightweight, snappy Kailh microswitch"
+    )
+    
+    static let silent = MouseSoundPack(
+        id: "mouse-silent",
+        name: "Silent Office Tactile",
+        description: "Muted, dampened soft click for quiet focus"
+    )
+    
+    static let defaultMousePack = omron
+    
+    static let bundledPacks: [MouseSoundPack] = [
+        .omron,
+        .superlight,
+        .razerOptical,
+        .glorious,
+        .silent
+    ]
+    
+    static var customPacks: [MouseSoundPack] {
+        let dir = customPacksDirectory
+        guard let items = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [.isDirectoryKey]) else {
+            return []
+        }
+        
+        var packs: [MouseSoundPack] = []
+        for item in items {
+            var isDir: ObjCBool = false
+            if FileManager.default.fileExists(atPath: item.path, isDirectory: &isDir), isDir.boolValue {
+                let packId = item.lastPathComponent
+                let packName = packId.split(separator: "-").map { $0.capitalized }.joined(separator: " ")
+                packs.append(MouseSoundPack(
+                    id: packId,
+                    name: packName,
+                    description: "Custom user mouse sound pack",
+                    isCustom: true,
+                    customDirectoryURL: item
+                ))
+            }
+        }
+        return packs
+    }
+    
+    static var allPacks: [MouseSoundPack] {
+        bundledPacks + customPacks
+    }
+    
+    static var visiblePacks: [MouseSoundPack] {
+        allPacks
+    }
+}
