@@ -1,0 +1,234 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Klackr.Models;
+using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
+
+namespace Klackr.Services
+{
+    public class CachedSound
+    {
+        public float[] AudioData { get; }
+        public WaveFormat WaveFormat { get; }
+
+        public CachedSound(string audioFileName)
+        {
+            using var audioFileReader = new AudioFileReader(audioFileName);
+            WaveFormat = audioFileReader.WaveFormat;
+            var wholeFile = new List<float>((int)(audioFileReader.Length / 4));
+            var readBuffer = new float[audioFileReader.WaveFormat.SampleRate * audioFileReader.WaveFormat.Channels];
+            int samplesRead;
+            while ((samplesRead = audioFileReader.Read(readBuffer, 0, readBuffer.Length)) > 0)
+            {
+                wholeFile.AddRange(readBuffer.Take(samplesRead));
+            }
+            AudioData = wholeFile.ToArray();
+        }
+    }
+
+    public class CachedSoundSampleProvider : ISampleProvider
+    {
+        private readonly CachedSound _cachedSound;
+        private readonly float _volume;
+        private long _position;
+
+        public CachedSoundSampleProvider(CachedSound cachedSound, float volume)
+        {
+            _cachedSound = cachedSound;
+            _volume = Math.Clamp(volume, 0f, 1f);
+        }
+
+        public WaveFormat WaveFormat => _cachedSound.WaveFormat;
+
+        public int Read(float[] buffer, int offset, int count)
+        {
+            var availableSamples = _cachedSound.AudioData.Length - _position;
+            var samplesToCopy = (int)Math.Min(availableSamples, count);
+            for (int i = 0; i < samplesToCopy; i++)
+            {
+                buffer[offset + i] = _cachedSound.AudioData[_position + i] * _volume;
+            }
+            _position += samplesToCopy;
+            return samplesToCopy;
+        }
+    }
+
+    public class SoundEngine : IDisposable
+    {
+        private IWavePlayer? _outputDevice;
+        private MixingSampleProvider? _mixer;
+        private readonly Dictionary<string, List<CachedSound>> _soundBuffers = new();
+        private readonly Random _random = new();
+        private readonly object _lock = new();
+
+        public SoundPackType CurrentPack { get; private set; } = SoundPackType.CherryMXBrown;
+        public float Volume { get; set; } = 0.85f;
+        public bool IsEnabled { get; set; } = true;
+
+        public SoundEngine()
+        {
+            InitializeAudioDevice();
+            LoadSoundPack(CurrentPack);
+        }
+
+        private void InitializeAudioDevice()
+        {
+            try
+            {
+                // Standard 44.1kHz stereo mixer for seamless blending
+                var format = WaveFormat.CreateIeeeFloatWaveFormat(44100, 2);
+                _mixer = new MixingSampleProvider(format) { ReadFully = true };
+
+                try
+                {
+                    // WASAPI shared mode with 20ms buffer for ultra-low latency
+                    var wasapi = new WasapiOut(NAudio.CoreAudioApi.AudioClientShareMode.Shared, 20);
+                    wasapi.Init(_mixer);
+                    wasapi.Play();
+                    _outputDevice = wasapi;
+                }
+                catch
+                {
+                    // Fallback to WaveOutEvent
+                    var waveOut = new WaveOutEvent { DesiredLatency = 40, NumberOfBuffers = 3 };
+                    waveOut.Init(_mixer);
+                    waveOut.Play();
+                    _outputDevice = waveOut;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Audio device init error: {ex.Message}");
+            }
+        }
+
+        public void LoadSoundPack(SoundPackType pack)
+        {
+            lock (_lock)
+            {
+                CurrentPack = pack;
+                _soundBuffers.Clear();
+
+                var soundsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds");
+                if (!Directory.Exists(soundsDir)) return;
+
+                var prefix = pack == SoundPackType.CherryMXBlue ? "cherry-mx-blue" : "cherry-mx-brown";
+
+                foreach (KeyType keyType in Enum.GetValues(typeof(KeyType)))
+                {
+                    foreach (KeyEvent keyEvent in Enum.GetValues(typeof(KeyEvent)))
+                    {
+                        var key = GetBufferKey(keyType, keyEvent);
+                        var soundFiles = ResolveSoundFiles(soundsDir, prefix, keyType, keyEvent);
+                        var cachedList = new List<CachedSound>();
+
+                        foreach (var file in soundFiles)
+                        {
+                            try
+                            {
+                                if (File.Exists(file))
+                                {
+                                    cachedList.Add(new CachedSound(file));
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Error caching sound {file}: {ex.Message}");
+                            }
+                        }
+
+                        if (cachedList.Count > 0)
+                        {
+                            _soundBuffers[key] = cachedList;
+                        }
+                    }
+                }
+            }
+        }
+
+        private List<string> ResolveSoundFiles(string dir, string prefix, KeyType keyType, KeyEvent keyEvent)
+        {
+            var files = new List<string>();
+            var eventStr = keyEvent == KeyEvent.Press ? "press" : "release";
+
+            if (prefix == "cherry-mx-brown")
+            {
+                if (keyType == KeyType.Space)
+                    files.Add(Path.Combine(dir, $"{prefix}_space_{eventStr}.mp3"));
+                else if (keyType == KeyType.Enter)
+                    files.Add(Path.Combine(dir, $"{prefix}_enter_{eventStr}.mp3"));
+                else if (keyType == KeyType.Backspace)
+                    files.Add(Path.Combine(dir, $"{prefix}_backspace_{eventStr}.mp3"));
+            }
+
+            if (files.Count == 0 || !files.Any(File.Exists))
+            {
+                files.Clear();
+                if (keyEvent == KeyEvent.Press)
+                {
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        var p = Path.Combine(dir, $"{prefix}_regular_press_{i}.mp3");
+                        if (File.Exists(p)) files.Add(p);
+                    }
+                }
+                else
+                {
+                    var p = Path.Combine(dir, $"{prefix}_regular_release.mp3");
+                    if (File.Exists(p)) files.Add(p);
+                }
+            }
+
+            return files;
+        }
+
+        public void PlaySound(KeyType keyType, KeyEvent keyEvent)
+        {
+            if (!IsEnabled || _mixer == null) return;
+
+            CachedSound? soundToPlay = null;
+            float volumeVariation;
+
+            lock (_lock)
+            {
+                var key = GetBufferKey(keyType, keyEvent);
+                if (!_soundBuffers.TryGetValue(key, out var list) || list.Count == 0)
+                {
+                    // Fallback to regular key sound
+                    var fallbackKey = GetBufferKey(KeyType.Regular, keyEvent);
+                    if (_soundBuffers.TryGetValue(fallbackKey, out var fallbackList) && fallbackList.Count > 0)
+                    {
+                        list = fallbackList;
+                    }
+                }
+
+                if (list != null && list.Count > 0)
+                {
+                    soundToPlay = list[_random.Next(list.Count)];
+                }
+
+                // Random volume variation between 0.9 and 1.0 for natural typing feel
+                volumeVariation = (float)(0.90 + _random.NextDouble() * 0.10);
+            }
+
+            if (soundToPlay != null)
+            {
+                var effectiveVolume = Volume * volumeVariation;
+                var sampleProvider = new CachedSoundSampleProvider(soundToPlay, effectiveVolume);
+                _mixer.AddMixerInput(sampleProvider);
+            }
+        }
+
+        private static string GetBufferKey(KeyType keyType, KeyEvent keyEvent) =>
+            $"{keyType}_{keyEvent}";
+
+        public void Dispose()
+        {
+            _outputDevice?.Stop();
+            _outputDevice?.Dispose();
+            _soundBuffers.Clear();
+        }
+    }
+}

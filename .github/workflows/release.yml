@@ -40,7 +40,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/Kutuk-Release.dmg
+            dist/Klackr-Release.dmg
           generate_release_notes: true
           draft: false
           prerelease: false

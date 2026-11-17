@@ -34,17 +34,28 @@ xattr -cr /Applications/Klackr.app
 
 Then open the app normally. Grant **Input Monitoring** permission when prompted (System Settings > Privacy & Security > Input Monitoring).
 
-### Build from Source
+### Build from Source (macOS)
 
 ```bash
-git clone https://github.com/<your-username>/klackr.git
-cd klackr
+git clone https://github.com/vickyjnv/Klackr.git
+cd Klackr
 make build        # Build the app
 make dist-app     # Create signed distribution
 make dmg          # Create DMG installer
 ```
 
 Requires Xcode 16+ and macOS 14+.
+
+---
+
+## Windows Support
+
+Klackr now natively supports **Windows 10 and 11**! See the [`windows/`](windows/README.md) directory.
+
+- **Native C# .NET 8 Tray App**: Ultra low-latency WASAPI audio, system tray controls, global `Alt+Ctrl+K` hotkey, and automatic startup toggle.
+- **Standalone Single-File Executable**: Run `windows/build.bat` or `dotnet publish` to build a self-contained `Klackr.exe`.
+- **Portable Python Option**: Run immediately with `windows/run_portable.bat`.
+- **Automated CI**: GitHub Actions automatically builds `Klackr-Windows-x64.zip` on every push!
 
 ### Versioning
 

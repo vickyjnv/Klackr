@@ -1,0 +1,173 @@
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using Klackr.Models;
+using Klackr.Services;
+
+namespace Klackr.UI
+{
+    public class TrayApplicationContext : ApplicationContext
+    {
+        private readonly NotifyIcon _trayIcon;
+        private readonly SoundEngine _soundEngine;
+        private readonly KeyboardHook _keyboardHook;
+        private readonly HotkeyManager _hotkeyManager;
+
+        private ToolStripMenuItem _enabledMenuItem = null!;
+        private ToolStripMenuItem _brownPackMenuItem = null!;
+        private ToolStripMenuItem _bluePackMenuItem = null!;
+        private ToolStripMenuItem _startupMenuItem = null!;
+
+        public TrayApplicationContext()
+        {
+            _soundEngine = new SoundEngine();
+            _keyboardHook = new KeyboardHook();
+            _hotkeyManager = new HotkeyManager();
+
+            _keyboardHook.OnKeyEvent += (keyType, keyEvent) =>
+            {
+                _soundEngine.PlaySound(keyType, keyEvent);
+            };
+
+            _hotkeyManager.OnHotkeyPressed += ToggleEnabled;
+
+            Icon? appIcon = null;
+            var icoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
+            if (File.Exists(icoPath))
+            {
+                try { appIcon = new Icon(icoPath); } catch { }
+            }
+            appIcon ??= SystemIcons.Application;
+
+            _trayIcon = new NotifyIcon
+            {
+                Icon = appIcon,
+                ContextMenuStrip = CreateContextMenu(),
+                Visible = true,
+                Text = "Klackr - Mechanical Keyboard Sounds"
+            };
+
+            _trayIcon.MouseClick += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ToggleEnabled();
+                }
+            };
+        }
+
+        private ContextMenuStrip CreateContextMenu()
+        {
+            var menu = new ContextMenuStrip();
+
+            _enabledMenuItem = new ToolStripMenuItem("Enabled (Alt+Ctrl+K)", null, (s, e) => ToggleEnabled())
+            {
+                Checked = _soundEngine.IsEnabled,
+                Font = new Font(menu.Font, FontStyle.Bold)
+            };
+            menu.Items.Add(_enabledMenuItem);
+
+            menu.Items.Add(new ToolStripSeparator());
+
+            // Volume Submenu
+            var volumeMenu = new ToolStripMenuItem("Volume");
+            int[] volumes = { 100, 80, 60, 40, 20 };
+            foreach (var vol in volumes)
+            {
+                var item = new ToolStripMenuItem($"{vol}%", null, (s, e) => SetVolume(vol));
+                if (Math.Abs(_soundEngine.Volume - (vol / 100f)) < 0.05f) item.Checked = true;
+                volumeMenu.DropDownItems.Add(item);
+            }
+            menu.Items.Add(volumeMenu);
+
+            // Sound Pack Submenu
+            var packMenu = new ToolStripMenuItem("Sound Pack");
+            _brownPackMenuItem = new ToolStripMenuItem("Cherry MX Brown (Tactile)", null, (s, e) => SetSoundPack(SoundPackType.CherryMXBrown))
+            {
+                Checked = _soundEngine.CurrentPack == SoundPackType.CherryMXBrown
+            };
+            _bluePackMenuItem = new ToolStripMenuItem("Cherry MX Blue (Clicky)", null, (s, e) => SetSoundPack(SoundPackType.CherryMXBlue))
+            {
+                Checked = _soundEngine.CurrentPack == SoundPackType.CherryMXBlue
+            };
+            packMenu.DropDownItems.Add(_brownPackMenuItem);
+            packMenu.DropDownItems.Add(_bluePackMenuItem);
+            menu.Items.Add(packMenu);
+
+            menu.Items.Add(new ToolStripSeparator());
+
+            // Startup Submenu
+            _startupMenuItem = new ToolStripMenuItem("Launch at Windows Startup", null, (s, e) => ToggleStartup())
+            {
+                Checked = StartupManager.IsLaunchAtStartupEnabled()
+            };
+            menu.Items.Add(_startupMenuItem);
+
+            menu.Items.Add(new ToolStripSeparator());
+
+            // About
+            menu.Items.Add(new ToolStripMenuItem("About Klackr...", null, (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "https://github.com/vickyjnv/Klackr",
+                        UseShellExecute = true
+                    });
+                }
+                catch { }
+            }));
+
+            // Exit
+            menu.Items.Add(new ToolStripMenuItem("Exit", null, (s, e) => ExitApplication()));
+
+            return menu;
+        }
+
+        private void ToggleEnabled()
+        {
+            _soundEngine.IsEnabled = !_soundEngine.IsEnabled;
+            _enabledMenuItem.Checked = _soundEngine.IsEnabled;
+            _trayIcon.Text = _soundEngine.IsEnabled ? "Klackr (Enabled)" : "Klackr (Muted)";
+        }
+
+        private void SetVolume(int percent)
+        {
+            _soundEngine.Volume = percent / 100f;
+            if (_trayIcon.ContextMenuStrip?.Items[2] is ToolStripMenuItem volMenu)
+            {
+                foreach (ToolStripMenuItem subItem in volMenu.DropDownItems)
+                {
+                    subItem.Checked = subItem.Text == $"{percent}%";
+                }
+            }
+        }
+
+        private void SetSoundPack(SoundPackType pack)
+        {
+            _soundEngine.LoadSoundPack(pack);
+            _brownPackMenuItem.Checked = pack == SoundPackType.CherryMXBrown;
+            _bluePackMenuItem.Checked = pack == SoundPackType.CherryMXBlue;
+        }
+
+        private void ToggleStartup()
+        {
+            var newState = !StartupManager.IsLaunchAtStartupEnabled();
+            StartupManager.SetLaunchAtStartup(newState);
+            _startupMenuItem.Checked = newState;
+        }
+
+        private void ExitApplication()
+        {
+            _trayIcon.Visible = false;
+            _keyboardHook.Dispose();
+            _hotkeyManager.Dispose();
+            _soundEngine.Dispose();
+            _trayIcon.Dispose();
+            Application.Exit();
+        }
+    }
+}

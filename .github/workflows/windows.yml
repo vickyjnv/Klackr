@@ -1,0 +1,38 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-windows:
+    name: Build Klackr Windows (.exe)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore windows/Klackr.csproj
+
+      - name: Publish Single-File Executable
+        run: |
+          dotnet publish windows/Klackr.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o dist/windows
+
+      - name: Create ZIP bundle
+        run: |
+          Compress-Archive -Path dist/windows/* -DestinationPath dist/Klackr-Windows-x64.zip
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Klackr-Windows-x64
+          path: dist/Klackr-Windows-x64.zip
+          retention-days: 14
