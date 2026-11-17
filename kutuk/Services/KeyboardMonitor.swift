@@ -146,12 +146,11 @@ class KeyboardMonitor: ObservableObject {
 
     /// Restart the app to pick up newly granted permissions
     func restartApp() {
-        let url = URL(fileURLWithPath: Bundle.main.resourcePath!)
-        let path = url.deletingLastPathComponent().deletingLastPathComponent().absoluteString
+        let appPath = Bundle.main.bundleURL.path
         let task = Process()
         task.launchPath = "/usr/bin/open"
-        task.arguments = [path]
-        task.launch()
+        task.arguments = [appPath]
+        try? task.run()
         NSApplication.shared.terminate(nil)
     }
 

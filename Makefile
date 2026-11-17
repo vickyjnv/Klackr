@@ -15,6 +15,12 @@ DMG_PATH := $(DIST_DIR)/$(DMG_NAME)
 BUNDLE_IDENTIFIER ?= io.github.irajul.kutuk
 PREVIEW_PORT ?= 8000
 
+# Detect local Apple Development signing identity if present; fallback to ad-hoc (-)
+CODESIGN_IDENTITY ?= $(shell security find-identity -v -p codesigning 2>/dev/null | grep -o 'Apple Development: [^"]*' | head -n 1)
+ifeq ($(strip $(CODESIGN_IDENTITY)),)
+	CODESIGN_IDENTITY := -
+endif
+
 # Build flags: Universal Binary (Intel + Apple Silicon), no code signing for CI
 XCODEBUILD_FLAGS ?= \
 	CODE_SIGNING_ALLOWED=NO \
@@ -46,7 +52,7 @@ dist-app: verify-app
 	rm -rf "$(DIST_APP_BUNDLE)"
 	mkdir -p "$(DIST_DIR)"
 	ditto "$(APP_BUNDLE)" "$(DIST_APP_BUNDLE)"
-	codesign --force --deep --sign - --identifier "$(BUNDLE_IDENTIFIER)" "$(DIST_APP_BUNDLE)"
+	codesign --force --deep --sign "$(CODESIGN_IDENTITY)" --identifier "$(BUNDLE_IDENTIFIER)" "$(DIST_APP_BUNDLE)"
 	@echo "App bundle created at $(DIST_APP_BUNDLE)"
 
 dmg: dist-app

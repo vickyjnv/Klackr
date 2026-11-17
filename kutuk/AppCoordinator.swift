@@ -42,7 +42,24 @@ final class AppCoordinator {
             self?.settings.toggleEnabled()
         }
 
-        // Note: monitoring start/stop is managed by MenuBarView's permission logic
+        // Automatically start monitoring if enabled and permission is already granted
+        if settings.isEnabled && keyboardMonitor.checkPermission() {
+            keyboardMonitor.startMonitoring()
+        }
+        
+        settings.$isEnabled
+            .dropFirst()
+            .sink { [weak self] isEnabled in
+                guard let self else { return }
+                if isEnabled {
+                    if self.keyboardMonitor.checkPermission() {
+                        self.keyboardMonitor.startMonitoring()
+                    }
+                } else {
+                    self.keyboardMonitor.stopMonitoring()
+                }
+            }
+            .store(in: &cancellables)
         
         settings.$volume
             .dropFirst()

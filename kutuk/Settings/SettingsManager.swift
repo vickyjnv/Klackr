@@ -121,8 +121,8 @@ class SettingsManager: ObservableObject {
             defaults.set(selectedSoundPackId, forKey: Keys.selectedSoundPackId)
         }
         
-        // Check current launch at login status
-        launchAtLogin = launchAtLoginController.isEnabled
+        // Check current launch at login status without triggering didSet
+        _launchAtLogin = Published(initialValue: launchAtLoginController.isEnabled)
     }
     
     // MARK: - Methods
