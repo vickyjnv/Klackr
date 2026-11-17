@@ -157,6 +157,26 @@ struct MenuBarView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 3)
             }
+
+            Button {
+                openSoundPackHub()
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundColor(.blue)
+                        .font(.system(size: 13))
+
+                    Text("Download & Manage Packs...")
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundColor(.blue)
+
+                    Spacer()
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .padding(.horizontal, 12)
+            .padding(.top, 4)
         }
     }
 
@@ -389,6 +409,25 @@ struct MenuBarView: View {
     private func stopPermissionPolling() {
         permissionPollTimer?.invalidate()
         permissionPollTimer = nil
+    }
+
+    private func openSoundPackHub() {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 520),
+            styleMask: [.titled, .closable, .miniaturizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.center()
+        window.title = "Klackr - Sound Pack Hub"
+        window.isReleasedWhenClosed = false
+        window.contentView = NSHostingView(
+            rootView: SoundPackHubView()
+                .environmentObject(settings)
+                .environmentObject(soundEngine)
+        )
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 }
 

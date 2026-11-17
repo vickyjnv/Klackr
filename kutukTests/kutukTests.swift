@@ -17,9 +17,9 @@ private struct MockLaunchAtLoginController: LaunchAtLoginControlling {
 }
 
 struct kutukTests {
-    @Test func openSourceBuildExposesBrownAndBluePacks() {
-        #expect(SoundPack.allPacks.map(\.id) == ["cherry-mx-brown", "cherry-mx-blue"])
-        #expect(SoundPack.visiblePacks.map(\.id) == ["cherry-mx-brown", "cherry-mx-blue"])
+    @Test func openSourceBuildExposesBundledPacks() {
+        let expectedIds = ["cherry-mx-brown", "cherry-mx-blue", "cherry-mx-red", "cherry-mx-black", "topre-purple", "everglide-oreo"]
+        #expect(SoundPack.bundledPacks.map(\.id) == expectedIds)
         #expect(SoundPack.defaultPack.id == SoundPack.cherryMXBrown.id)
     }
 

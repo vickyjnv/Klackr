@@ -114,7 +114,15 @@ namespace Klackr.Services
                 var soundsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds");
                 if (!Directory.Exists(soundsDir)) return;
 
-                var prefix = pack == SoundPackType.CherryMXBlue ? "cherry-mx-blue" : "cherry-mx-brown";
+                var prefix = pack switch
+                {
+                    SoundPackType.CherryMXBlue => "cherry-mx-blue",
+                    SoundPackType.CherryMXRed => "cherry-mx-red",
+                    SoundPackType.CherryMXBlack => "cherry-mx-black",
+                    SoundPackType.ToprePurple => "topre-purple",
+                    SoundPackType.EverglideOreo => "everglide-oreo",
+                    _ => "cherry-mx-brown"
+                };
 
                 foreach (KeyType keyType in Enum.GetValues(typeof(KeyType)))
                 {
@@ -153,14 +161,20 @@ namespace Klackr.Services
             var files = new List<string>();
             var eventStr = keyEvent == KeyEvent.Press ? "press" : "release";
 
-            if (prefix == "cherry-mx-brown")
+            if (keyType == KeyType.Space)
             {
-                if (keyType == KeyType.Space)
-                    files.Add(Path.Combine(dir, $"{prefix}_space_{eventStr}.mp3"));
-                else if (keyType == KeyType.Enter)
-                    files.Add(Path.Combine(dir, $"{prefix}_enter_{eventStr}.mp3"));
-                else if (keyType == KeyType.Backspace)
-                    files.Add(Path.Combine(dir, $"{prefix}_backspace_{eventStr}.mp3"));
+                var p = Path.Combine(dir, $"{prefix}_space_{eventStr}.mp3");
+                if (File.Exists(p)) files.Add(p);
+            }
+            else if (keyType == KeyType.Enter)
+            {
+                var p = Path.Combine(dir, $"{prefix}_enter_{eventStr}.mp3");
+                if (File.Exists(p)) files.Add(p);
+            }
+            else if (keyType == KeyType.Backspace)
+            {
+                var p = Path.Combine(dir, $"{prefix}_backspace_{eventStr}.mp3");
+                if (File.Exists(p)) files.Add(p);
             }
 
             if (files.Count == 0 || !files.Any(File.Exists))

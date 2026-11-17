@@ -18,6 +18,10 @@ namespace Klackr.Models
     public enum SoundPackType
     {
         CherryMXBrown,
-        CherryMXBlue
+        CherryMXBlue,
+        CherryMXRed,
+        CherryMXBlack,
+        ToprePurple,
+        EverglideOreo
     }
 }

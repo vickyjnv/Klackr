@@ -16,8 +16,6 @@ namespace Klackr.UI
         private readonly HotkeyManager _hotkeyManager;
 
         private ToolStripMenuItem _enabledMenuItem = null!;
-        private ToolStripMenuItem _brownPackMenuItem = null!;
-        private ToolStripMenuItem _bluePackMenuItem = null!;
         private ToolStripMenuItem _startupMenuItem = null!;
 
         public TrayApplicationContext()
@@ -84,16 +82,49 @@ namespace Klackr.UI
 
             // Sound Pack Submenu
             var packMenu = new ToolStripMenuItem("Sound Pack");
-            _brownPackMenuItem = new ToolStripMenuItem("Cherry MX Brown (Tactile)", null, (s, e) => SetSoundPack(SoundPackType.CherryMXBrown))
+            var packs = new (string Name, SoundPackType Type)[]
             {
-                Checked = _soundEngine.CurrentPack == SoundPackType.CherryMXBrown
+                ("Cherry MX Brown (Tactile)", SoundPackType.CherryMXBrown),
+                ("Cherry MX Blue (Clicky)", SoundPackType.CherryMXBlue),
+                ("Cherry MX Red (Smooth Linear)", SoundPackType.CherryMXRed),
+                ("Cherry MX Black (Heavy Linear)", SoundPackType.CherryMXBlack),
+                ("Topre Purple Hybrid (Thock)", SoundPackType.ToprePurple),
+                ("Everglide Oreo (Snappy Tactile)", SoundPackType.EverglideOreo)
             };
-            _bluePackMenuItem = new ToolStripMenuItem("Cherry MX Blue (Clicky)", null, (s, e) => SetSoundPack(SoundPackType.CherryMXBlue))
+
+            foreach (var p in packs)
             {
-                Checked = _soundEngine.CurrentPack == SoundPackType.CherryMXBlue
-            };
-            packMenu.DropDownItems.Add(_brownPackMenuItem);
-            packMenu.DropDownItems.Add(_bluePackMenuItem);
+                var item = new ToolStripMenuItem(p.Name, null, (s, e) => SetSoundPack(p.Type))
+                {
+                    Checked = _soundEngine.CurrentPack == p.Type,
+                    Tag = p.Type
+                };
+                packMenu.DropDownItems.Add(item);
+            }
+
+            packMenu.DropDownItems.Add(new ToolStripSeparator());
+            packMenu.DropDownItems.Add(new ToolStripMenuItem("Open Sounds Folder...", null, (s, e) =>
+            {
+                try
+                {
+                    var soundsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Sounds");
+                    if (!Directory.Exists(soundsDir)) Directory.CreateDirectory(soundsDir);
+                    Process.Start("explorer.exe", soundsDir);
+                }
+                catch { }
+            }));
+            packMenu.DropDownItems.Add(new ToolStripMenuItem("Download Community Packs (Mechvibes)...", null, (s, e) =>
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "https://mechvibes.com/soundpacks",
+                        UseShellExecute = true
+                    });
+                }
+                catch { }
+            }));
             menu.Items.Add(packMenu);
 
             menu.Items.Add(new ToolStripSeparator());
@@ -149,8 +180,16 @@ namespace Klackr.UI
         private void SetSoundPack(SoundPackType pack)
         {
             _soundEngine.LoadSoundPack(pack);
-            _brownPackMenuItem.Checked = pack == SoundPackType.CherryMXBrown;
-            _bluePackMenuItem.Checked = pack == SoundPackType.CherryMXBlue;
+            if (_trayIcon.ContextMenuStrip?.Items[3] is ToolStripMenuItem packMenu)
+            {
+                foreach (ToolStripItem item in packMenu.DropDownItems)
+                {
+                    if (item is ToolStripMenuItem menuItem && menuItem.Tag is SoundPackType itemType)
+                    {
+                        menuItem.Checked = itemType == pack;
+                    }
+                }
+            }
         }
 
         private void ToggleStartup()

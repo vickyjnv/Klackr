@@ -53,7 +53,7 @@ class KlackrApp:
             for ev in events:
                 key = f"{kt}_{ev}"
                 files = []
-                if pack_id == "cherry-mx-brown" and kt in ["space", "enter", "backspace"]:
+                if kt in ["space", "enter", "backspace"]:
                     f = SOUNDS_DIR / f"{pack_id}_{kt}_{ev}.mp3"
                     if f.exists():
                         files.append(f)
@@ -130,8 +130,12 @@ class KlackrApp:
             item("Enabled", lambda icon, item: self.toggle_enabled(), checked=lambda item: self.is_enabled),
             pystray.Menu.SEPARATOR,
             item("Sound Pack", pystray.Menu(
-                item("Cherry MX Brown", lambda icon, item: self.set_pack("cherry-mx-brown"), checked=lambda item: self.current_pack == "cherry-mx-brown"),
-                item("Cherry MX Blue", lambda icon, item: self.set_pack("cherry-mx-blue"), checked=lambda item: self.current_pack == "cherry-mx-blue"),
+                item("Cherry MX Brown (Tactile)", lambda icon, item: self.set_pack("cherry-mx-brown"), checked=lambda item: self.current_pack == "cherry-mx-brown"),
+                item("Cherry MX Blue (Clicky)", lambda icon, item: self.set_pack("cherry-mx-blue"), checked=lambda item: self.current_pack == "cherry-mx-blue"),
+                item("Cherry MX Red (Smooth Linear)", lambda icon, item: self.set_pack("cherry-mx-red"), checked=lambda item: self.current_pack == "cherry-mx-red"),
+                item("Cherry MX Black (Heavy Linear)", lambda icon, item: self.set_pack("cherry-mx-black"), checked=lambda item: self.current_pack == "cherry-mx-black"),
+                item("Topre Purple Hybrid (Thock)", lambda icon, item: self.set_pack("topre-purple"), checked=lambda item: self.current_pack == "topre-purple"),
+                item("Everglide Oreo (Snappy Tactile)", lambda icon, item: self.set_pack("everglide-oreo"), checked=lambda item: self.current_pack == "everglide-oreo"),
             )),
             item("Volume", pystray.Menu(
                 item("100%", lambda icon, item: self.set_volume(1.0), checked=lambda item: abs(self.volume - 1.0) < 0.05),
