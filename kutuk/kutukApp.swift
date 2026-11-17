@@ -1,14 +1,14 @@
 //
-//  kutukApp.swift
-//  kutuk
+//  KlackrApp.swift
+//  Klackr
 //
-//  Kutuk - Mechanical Keyboard Sound App
+//  Klackr - Mechanical Keyboard Sound App
 //
 
 import SwiftUI
 
 @main
-struct KutukApp: App {
+struct KlackrApp: App {
     @StateObject private var settings: SettingsManager
     @StateObject private var soundEngine: SoundEngine
     @StateObject private var keyboardMonitor: KeyboardMonitor
@@ -36,9 +36,9 @@ struct KutukApp: App {
                 .environmentObject(soundEngine)
                 .environmentObject(keyboardMonitor)
         } label: {
-            Image(systemName: "command")
+            Image(systemName: "keyboard.fill")
                 .symbolRenderingMode(.monochrome)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.primary)
                 .opacity(settings.isEnabled ? 1 : 0.65)
         }

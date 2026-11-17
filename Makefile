@@ -4,15 +4,15 @@ CONFIGURATION ?= Release
 DESTINATION ?= generic/platform=macOS
 DERIVED_DATA := $(CURDIR)/build/DerivedData
 BUILD_PRODUCTS_DIR := $(DERIVED_DATA)/Build/Products/$(CONFIGURATION)
-APP_NAME := Kutuk
+APP_NAME := Klackr
 APP_BUNDLE := $(BUILD_PRODUCTS_DIR)/$(APP_NAME).app
 DIST_DIR := $(CURDIR)/dist
 DIST_APP_BUNDLE := $(DIST_DIR)/$(APP_NAME).app
 DMG_STAGING_DIR := $(DIST_DIR)/dmg
-DMG_VOLUME_NAME ?= Kutuk
-DMG_NAME ?= Kutuk-$(CONFIGURATION).dmg
+DMG_VOLUME_NAME ?= Klackr
+DMG_NAME ?= Klackr-$(CONFIGURATION).dmg
 DMG_PATH := $(DIST_DIR)/$(DMG_NAME)
-BUNDLE_IDENTIFIER ?= io.github.irajul.kutuk
+BUNDLE_IDENTIFIER ?= io.github.vicky.klackr
 PREVIEW_PORT ?= 8000
 
 # Detect local Apple Development signing identity if present; fallback to ad-hoc (-)

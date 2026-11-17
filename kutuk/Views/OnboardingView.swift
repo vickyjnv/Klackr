@@ -26,12 +26,12 @@ struct OnboardingView: View {
                 )
             
             // Title
-            Text("Kutuk needs access")
+            Text("Klackr needs access")
                 .font(.system(size: 20, weight: .semibold))
             
             // Description
             VStack(spacing: 12) {
-                Text("To play sounds when you type, Kutuk needs **Input Monitoring** permission.")
+                Text("To play sounds when you type, Klackr needs **Input Monitoring** permission.")
                     .multilineTextAlignment(.center)
                     .foregroundColor(.secondary)
                 

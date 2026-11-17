@@ -1,14 +1,13 @@
-# Kutuk
+# Klackr
 
-Mechanical keyboard sounds for your Mac. Kutuk plays satisfying Cherry MX Brown and Cherry MX Blue sounds as you type, running quietly in your menu bar.
+Mechanical keyboard sounds for your Mac. Klackr plays satisfying Cherry MX Brown and Cherry MX Blue sounds as you type, running quietly in your menu bar.
 
 <p align="center">
-  <img src=".github/assets/kutuk-hero-image.jpg" alt="Kutuk hero image showing the macOS menu bar app" width="100%">
+  <img src="assets/klackr_icon_1024.png" alt="Klackr App Icon" width="160">
 </p>
 
 ![macOS](https://img.shields.io/badge/macOS-14.0%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Build](https://img.shields.io/github/actions/workflow/status/irajul/kutuk/build.yml?branch=main)
 
 ## Features
 
@@ -23,25 +22,25 @@ Mechanical keyboard sounds for your Mac. Kutuk plays satisfying Cherry MX Brown 
 
 ### Download
 
-Grab the latest DMG from [Releases](https://github.com/irajul/kutuk/releases), open it, and drag **Kutuk.app** into Applications.
+Grab the latest DMG from Releases, open it, and drag **Klackr.app** into Applications.
 
 ### Important: First Launch
 
-Since Kutuk is not notarized (it's a free open-source app), macOS Gatekeeper will block it. You need to remove the quarantine attribute before the first launch:
+Since Klackr is built locally or distributed as an ad-hoc / developer-signed app, remove the quarantine attribute before the first launch:
 
 ```bash
-xattr -cr /Applications/Kutuk.app
+xattr -cr /Applications/Klackr.app
 ```
 
-Then open the app normally. You'll also need to grant **Input Monitoring** permission when prompted (System Settings > Privacy & Security > Input Monitoring).
+Then open the app normally. Grant **Input Monitoring** permission when prompted (System Settings > Privacy & Security > Input Monitoring).
 
 ### Build from Source
 
 ```bash
-git clone https://github.com/irajul/kutuk.git
-cd kutuk
+git clone https://github.com/<your-username>/klackr.git
+cd klackr
 make build        # Build the app
-make dist-app     # Create ad-hoc signed distribution
+make dist-app     # Create signed distribution
 make dmg          # Create DMG installer
 ```
 
