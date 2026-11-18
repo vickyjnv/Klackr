@@ -29,34 +29,31 @@ struct MenuBarView: View {
     }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                toggleSection
+        VStack(alignment: .leading, spacing: 0) {
+            toggleSection
 
-                Divider().padding(.vertical, 4)
+            Divider().padding(.vertical, 4)
 
-                volumeSection
+            volumeSection
 
-                Divider().padding(.vertical, 4)
+            Divider().padding(.vertical, 4)
 
-                soundPackSection
+            soundPackSection
 
-                Divider().padding(.vertical, 4)
+            Divider().padding(.vertical, 4)
 
-                mouseSection
+            mouseSection
 
-                Divider().padding(.vertical, 4)
+            Divider().padding(.vertical, 4)
 
-                settingsSection
+            settingsSection
 
-                Divider().padding(.vertical, 4)
+            Divider().padding(.vertical, 4)
 
-                footerSection
-            }
-            .padding(.vertical, 8)
+            footerSection
         }
+        .padding(.vertical, 8)
         .frame(width: 310)
-        .frame(maxHeight: 560)
         .onAppear {
             syncPermissionState()
             startPermissionPollingIfNeeded()
@@ -128,52 +125,47 @@ struct MenuBarView: View {
     // MARK: - Sound Pack Section
 
     private var soundPackSection: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 6) {
             Text("Sound Pack")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(.secondary)
                 .padding(.horizontal, 12)
-                .padding(.bottom, 2)
 
-            ForEach(SoundPack.visiblePacks) { pack in
-                Button {
-                    settings.selectSoundPack(pack)
-                    soundEngine.loadSoundPack(pack)
-                    soundEngine.playPreview()
-                } label: {
-                    HStack {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 11, weight: .semibold))
-                            .frame(width: 16)
-                            .opacity(settings.selectedSoundPackId == pack.id ? 1 : 0)
-
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(pack.name)
-                                .font(.system(size: 13))
-
-                            Text(pack.description)
-                                .font(.system(size: 10))
-                                .foregroundColor(.secondary)
+            HStack {
+                Picker("Keyboard Switch", selection: Binding(
+                    get: { settings.selectedSoundPackId },
+                    set: { newId in
+                        if let pack = SoundPack.visiblePacks.first(where: { $0.id == newId }) {
+                            settings.selectSoundPack(pack)
+                            soundEngine.loadSoundPack(pack)
+                            soundEngine.playPreview()
                         }
-
-                        Spacer()
                     }
-                    .contentShape(Rectangle())
+                )) {
+                    ForEach(SoundPack.visiblePacks) { pack in
+                        Text(pack.name).tag(pack.id)
+                    }
                 }
-                .buttonStyle(.plain)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 3)
+                .labelsHidden()
+            }
+            .padding(.horizontal, 12)
+
+            if let selected = SoundPack.visiblePacks.first(where: { $0.id == settings.selectedSoundPackId }) {
+                Text(selected.description)
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
+                    .padding(.horizontal, 12)
             }
 
             Button {
                 openSoundPackHub()
             } label: {
                 HStack(spacing: 6) {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: "square.grid.2x2.fill")
                         .foregroundColor(.blue)
-                        .font(.system(size: 13))
+                        .font(.system(size: 11))
 
-                    Text("Download & Manage Packs...")
+                    Text("Sound Pack Hub & Previews...")
                         .font(.system(size: 12, weight: .medium))
                         .foregroundColor(.blue)
 
@@ -183,14 +175,15 @@ struct MenuBarView: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 12)
-            .padding(.top, 4)
+            .padding(.top, 2)
         }
+        .padding(.vertical, 2)
     }
 
     // MARK: - Mouse Section
 
     private var mouseSection: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: 6) {
             Button {
                 settings.toggleMouseSound()
             } label: {
@@ -212,7 +205,7 @@ struct MenuBarView: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 12)
-            .padding(.vertical, 3)
+            .padding(.vertical, 2)
 
             if settings.isMouseSoundEnabled {
                 HStack(spacing: 8) {
@@ -231,39 +224,35 @@ struct MenuBarView: View {
                         .frame(width: 28, alignment: .trailing)
                 }
                 .padding(.horizontal, 12)
-                .padding(.vertical, 2)
 
-                ForEach(MouseSoundPack.visiblePacks) { pack in
-                    Button {
-                        settings.selectMouseSoundPack(pack)
-                        soundEngine.loadMouseSoundPack(pack)
-                        soundEngine.playMousePreview()
-                    } label: {
-                        HStack {
-                            Image(systemName: "checkmark")
-                                .font(.system(size: 11, weight: .semibold))
-                                .frame(width: 16)
-                                .opacity(settings.selectedMouseSoundPackId == pack.id ? 1 : 0)
-
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text(pack.name)
-                                    .font(.system(size: 12))
-
-                                Text(pack.description)
-                                    .font(.system(size: 10))
-                                    .foregroundColor(.secondary)
+                HStack {
+                    Picker("Mouse Switch", selection: Binding(
+                        get: { settings.selectedMouseSoundPackId },
+                        set: { newId in
+                            if let pack = MouseSoundPack.visiblePacks.first(where: { $0.id == newId }) {
+                                settings.selectMouseSoundPack(pack)
+                                soundEngine.loadMouseSoundPack(pack)
+                                soundEngine.playMousePreview()
                             }
-
-                            Spacer()
                         }
-                        .contentShape(Rectangle())
+                    )) {
+                        ForEach(MouseSoundPack.visiblePacks) { pack in
+                            Text(pack.name).tag(pack.id)
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 2)
+                    .labelsHidden()
+                }
+                .padding(.horizontal, 12)
+
+                if let selectedMouse = MouseSoundPack.visiblePacks.first(where: { $0.id == settings.selectedMouseSoundPackId }) {
+                    Text(selectedMouse.description)
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                        .padding(.horizontal, 12)
                 }
             }
         }
+        .padding(.vertical, 2)
     }
 
     // MARK: - Settings Section
