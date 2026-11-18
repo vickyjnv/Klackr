@@ -10,8 +10,11 @@ Mechanical keyboard and mouse click sound simulator for macOS and Windows. Klack
   <a href="https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Release.dmg">
     <img src="https://img.shields.io/badge/Download%20for%20macOS-Klackr--Release.dmg-007AFF?style=for-the-badge&logo=apple&logoColor=white" alt="Download for macOS">
   </a>
+  <a href="https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Setup-1.0.0-x64.exe">
+    <img src="https://img.shields.io/badge/Download%20for%20Windows-Klackr--Setup--x64.exe-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows (Installer)">
+  </a>
   <a href="https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Windows-x64.zip">
-    <img src="https://img.shields.io/badge/Download%20for%20Windows-Klackr--Windows--x64.zip-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows">
+    <img src="https://img.shields.io/badge/Download%20for%20Windows-Klackr--Windows--x64.zip-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Download for Windows (Portable)">
   </a>
 </p>
 
@@ -29,7 +32,8 @@ Mechanical keyboard and mouse click sound simulator for macOS and Windows. Klack
 | Platform | Download Link | Format | Architecture |
 | :--- | :--- | :--- | :--- |
 | **macOS** | [**`Klackr-Release.dmg`**](https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Release.dmg) | `.dmg` installer | Universal (`Apple Silicon` + `Intel x86_64`) |
-| **Windows** | [**`Klackr-Windows-x64.zip`**](https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Windows-x64.zip) | Standalone `.zip` | Windows 10/11 64-bit |
+| **Windows (Installer)** | [**`Klackr-Setup-1.0.0-x64.exe`**](https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Setup-1.0.0-x64.exe) | `.exe` installer (NSIS) | Windows 10/11 64-bit |
+| **Windows (Portable)** | [**`Klackr-Windows-x64.zip`**](https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Windows-x64.zip) | Standalone `.zip` | Windows 10/11 64-bit |
 
 > [!TIP]
 > You can also browse all version tags and changelogs on the [**GitHub Releases Page**](https://github.com/vickyjnv/Klackr/releases).
@@ -48,7 +52,14 @@ Mechanical keyboard and mouse click sound simulator for macOS and Windows. Klack
    - When prompted, click **Grant Input Monitoring** (or go to *System Settings > Privacy & Security > Input Monitoring* and enable **Klackr**).
    - Click the Klackr menu bar icon and tap **Restart to Apply Permission**.
 
-### Windows Quick Setup
+### Windows Quick Setup (Installer - Recommended)
+
+1. **Download**: Click [**`Klackr-Setup-1.0.0-x64.exe`**](https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Setup-1.0.0-x64.exe).
+2. **Run Installer**: Double-click the `.exe` file and follow the setup wizard.
+3. **Choose Options**: Select desktop shortcut, startup launch, and auto-launch after install.
+4. **Launch**: Klackr starts in your system tray. Right-click the tray icon for settings.
+
+### Windows Quick Setup (Portable)
 
 1. **Download**: Click [**`Klackr-Windows-x64.zip`**](https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Windows-x64.zip).
 2. **Extract**: Right-click the `.zip` archive and choose **Extract All**.
@@ -85,14 +96,19 @@ Mechanical keyboard and mouse click sound simulator for macOS and Windows. Klack
   - **Apple Magic Mouse** (Acoustic glass-aluminum surface click)
   - **Kailh GM 8.0 Black Mamba** (High-tension 80M esports microswitch)
 - **Independent Audio Engines**: Toggle keyboard sounds and mouse clicks separately, each with individual volume sliders.
+- **⚙️ Settings Window**: Dedicated settings UI with 3 tabs (Keyboard, Mouse, General) accessible from tray menu — configure sound packs, volumes, test sounds, manage startup, and open sound folders.
 - **In-App Sound Pack Hub**: Audition switches with one-click preview audio, import custom folders, reveal your local packs directory in Finder/Explorer, and browse community packs.
 - **Ultra-Low Latency**: Dedicated polyphony player pools for keyboard typing (8 voices) and mouse clicks (4 voices).
 - **Universal Binary (macOS)**: Native Apple Silicon (M1/M2/M3/M4) and Intel x86_64 architecture support.
-- **Windows Tray App**: Native C# .NET 8 WASAPI app with low-latency audio and system tray controls.
+- **Windows Tray App**: Native C# .NET 8 WASAPI app with low-latency audio, system tray controls, and NSIS installer.
+- **Global Hotkey**: `Alt + Ctrl + K` to quickly mute/unmute anytime.
+- **Launch at Startup**: Optional one-click toggle to launch with Windows.
 
 ---
 
-## Building from Source (macOS)
+## Building from Source
+
+### macOS
 
 ```bash
 git clone https://github.com/vickyjnv/Klackr.git
@@ -103,6 +119,37 @@ make dmg          # Generate dist/Klackr-Release.dmg
 ```
 
 Requirements: macOS 14.0+ and Xcode 15+.
+
+### Windows
+
+**Requirements**: [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+
+#### Build & Run Directly:
+```cmd
+cd windows
+dotnet run
+```
+
+#### Publish Standalone Single-File Executable (`Klackr.exe`):
+```cmd
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ../dist/windows
+```
+This produces a single, self-contained `Klackr.exe` in `dist/windows/` that requires no .NET runtime installation.
+
+#### Build NSIS Installer:
+```cmd
+# Requires NSIS (https://nsis.sourceforge.io/Download)
+cd windows
+makensis Klackr_Installer.nsi
+```
+Output: `dist/Klackr-Setup-1.0.0-x64.exe` — a full installer with Start Menu shortcuts, uninstaller, and optional desktop/startup integration.
+
+#### Build Inno Setup Installer (Alternative):
+```cmd
+# Requires Inno Setup 6 (https://jrsoftware.org/isdl.php)
+cd windows
+iscc Klackr_Installer.iss
+```
 
 ---
 
@@ -124,17 +171,18 @@ git push origin main --tags
 
 GitHub Actions will automatically:
 1. Build the Universal Binary on a macOS runner and package `Klackr-Release.dmg`.
-2. Build the self-contained executable on Windows runner and package `Klackr-Windows-x64.zip`.
-3. Create a GitHub Release under `v1.0.0` and attach both binary assets so they are directly downloadable via:
+2. Build the self-contained executable on Windows runner and package `Klackr-Windows-x64.zip` and `Klackr-Setup-1.0.0-x64.exe`.
+3. Create a GitHub Release under `v1.0.0` and attach all binary assets so they are directly downloadable via:
    - `https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Release.dmg`
    - `https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Windows-x64.zip`
+   - `https://github.com/vickyjnv/Klackr/releases/latest/download/Klackr-Setup-1.0.0-x64.exe`
 
 ### Manual Release Upload (Optional)
 
 You can also create a release directly via GitHub web:
 1. Go to [**github.com/vickyjnv/Klackr/releases/new**](https://github.com/vickyjnv/Klackr/releases/new).
 2. Choose or create tag `v1.0.0`.
-3. Drag and drop your local `dist/Klackr-Release.dmg` into the upload zone.
+3. Drag and drop your local `dist/Klackr-Release.dmg`, `dist/windows/Klackr.exe`, and `dist/Klackr-Setup-1.0.0-x64.exe` into the upload zone.
 4. Click **Publish release**.
 
 ---
