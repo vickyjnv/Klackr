@@ -34,6 +34,16 @@ namespace Klackr.Services
                 if (curModule != null)
                 {
                     _hookId = SetWindowsHookEx(WH_KEYBOARD_LL, _proc, GetModuleHandle(curModule.ModuleName), 0);
+                    if (_hookId == IntPtr.Zero)
+                    {
+                        int error = Marshal.GetLastWin32Error();
+                        System.Diagnostics.Debug.WriteLine($"Failed to install keyboard hook. Error code: {error}");
+                        throw new System.ComponentModel.Win32Exception(error, "Failed to install low-level keyboard hook. Run as administrator if needed.");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Keyboard hook installed successfully. Hook ID: {_hookId}");
+                    }
                 }
             }
         }
@@ -49,20 +59,35 @@ namespace Klackr.Services
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
+            try
             {
-                int msg = wParam.ToInt32();
-                bool isDown = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
-                bool isUp = msg == WM_KEYUP || msg == WM_SYSKEYUP;
-
-                if (isDown || isUp)
+                if (nCode >= 0)
                 {
-                    int vkCode = Marshal.ReadInt32(lParam);
-                    var keyType = ClassifyKey(vkCode);
-                    var keyEvent = isDown ? KeyEvent.Press : KeyEvent.Release;
+                    int msg = wParam.ToInt32();
+                    bool isDown = msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN;
+                    bool isUp = msg == WM_KEYUP || msg == WM_SYSKEYUP;
 
-                    OnKeyEvent?.Invoke(keyType, keyEvent);
+                    if (isDown || isUp)
+                    {
+                        int vkCode = Marshal.ReadInt32(lParam);
+                        var keyType = ClassifyKey(vkCode);
+                        var keyEvent = isDown ? KeyEvent.Press : KeyEvent.Release;
+
+                        // Invoke event safely - catch any exceptions to prevent crash
+                        try
+                        {
+                            OnKeyEvent?.Invoke(keyType, keyEvent);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Keyboard hook event error: {ex.Message}");
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Keyboard hook callback error: {ex.Message}");
             }
 
             return CallNextHookEx(_hookId, nCode, wParam, lParam);

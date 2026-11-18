@@ -5,6 +5,7 @@ using System.Linq;
 using Klackr.Models;
 using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using NAudio.MediaFoundation;
 
 namespace Klackr.Services
 {
@@ -15,16 +16,80 @@ namespace Klackr.Services
 
         public CachedSound(string audioFileName)
         {
-            using var audioFileReader = new AudioFileReader(audioFileName);
-            WaveFormat = audioFileReader.WaveFormat;
-            var wholeFile = new List<float>((int)(audioFileReader.Length / 4));
-            var readBuffer = new float[audioFileReader.WaveFormat.SampleRate * audioFileReader.WaveFormat.Channels];
-            int samplesRead;
-            while ((samplesRead = audioFileReader.Read(readBuffer, 0, readBuffer.Length)) > 0)
+            try
             {
-                wholeFile.AddRange(readBuffer.Take(samplesRead));
+                // Use MediaFoundationReader for better MP3 support on Windows 8+
+                using var mediaFoundationReader = new MediaFoundationReader(audioFileName);
+                WaveFormat = mediaFoundationReader.WaveFormat;
+
+                // Read all audio data as bytes and convert to float
+                var byteBuffer = new byte[mediaFoundationReader.WaveFormat.AverageBytesPerSecond];
+                var floatBuffer = new List<float>();
+
+                int bytesRead;
+                while ((bytesRead = mediaFoundationReader.Read(byteBuffer, 0, byteBuffer.Length)) > 0)
+                {
+                    // Convert bytes to float samples based on WaveFormat
+                    var samples = BytesToFloatSamples(byteBuffer, bytesRead, mediaFoundationReader.WaveFormat);
+                    floatBuffer.AddRange(samples);
+                }
+
+                AudioData = floatBuffer.ToArray();
+                System.Diagnostics.Debug.WriteLine($"Loaded sound: {audioFileName} ({WaveFormat.SampleRate}Hz, {WaveFormat.Channels}ch, {AudioData.Length} samples)");
             }
-            AudioData = wholeFile.ToArray();
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MediaFoundationReader failed for {audioFileName}: {ex.Message}. Trying AudioFileReader...");
+                // Fallback to AudioFileReader
+                using var audioFileReader = new AudioFileReader(audioFileName);
+                WaveFormat = audioFileReader.WaveFormat;
+                var wholeFile = new List<float>((int)(audioFileReader.Length / 4));
+                var readBuffer = new float[audioFileReader.WaveFormat.SampleRate * audioFileReader.WaveFormat.Channels];
+                int samplesRead;
+                while ((samplesRead = audioFileReader.Read(readBuffer, 0, readBuffer.Length)) > 0)
+                {
+                    wholeFile.AddRange(readBuffer.Take(samplesRead));
+                }
+                AudioData = wholeFile.ToArray();
+                System.Diagnostics.Debug.WriteLine($"Loaded sound (fallback): {audioFileName} ({WaveFormat.SampleRate}Hz, {WaveFormat.Channels}ch, {AudioData.Length} samples)");
+            }
+        }
+
+        private static float[] BytesToFloatSamples(byte[] bytes, int bytesRead, WaveFormat waveFormat)
+        {
+            var samples = new List<float>();
+            int bytesPerSample = waveFormat.BitsPerSample / 8;
+            int channels = waveFormat.Channels;
+
+            for (int i = 0; i < bytesRead; i += bytesPerSample * channels)
+            {
+                if (i + bytesPerSample <= bytesRead)
+                {
+                    // For IEEE float format (MediaFoundation typically outputs this)
+                    if (waveFormat.Encoding == WaveFormatEncoding.IeeeFloat)
+                    {
+                        float sample = BitConverter.ToSingle(bytes, i);
+                        samples.Add(sample);
+                    }
+                    else if (waveFormat.BitsPerSample == 16)
+                    {
+                        short sample = BitConverter.ToInt16(bytes, i);
+                        samples.Add(sample / 32768f);
+                    }
+                    else if (waveFormat.BitsPerSample == 24)
+                    {
+                        int sample = bytes[i] | (bytes[i + 1] << 8) | (bytes[i + 2] << 16);
+                        if ((sample & 0x800000) != 0) sample |= unchecked((int)0xFF000000); // Sign extend
+                        samples.Add(sample / 8388608f);
+                    }
+                    else if (waveFormat.BitsPerSample == 32)
+                    {
+                        int sample = BitConverter.ToInt32(bytes, i);
+                        samples.Add(sample / 2147483648f);
+                    }
+                }
+            }
+            return samples.ToArray();
         }
     }
 
@@ -70,6 +135,20 @@ namespace Klackr.Services
         public float MouseVolume { get; set; } = 0.85f;
         public bool IsEnabled { get; set; } = true;
         public bool IsMouseEnabled { get; set; } = true;
+
+        static SoundEngine()
+        {
+            // Initialize MediaFoundation for MP3 support
+            try
+            {
+                MediaFoundationApi.Startup();
+                System.Diagnostics.Debug.WriteLine("MediaFoundation initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MediaFoundation startup warning: {ex.Message}");
+            }
+        }
 
         public SoundEngine()
         {
@@ -273,33 +352,40 @@ namespace Klackr.Services
             CachedSound? soundToPlay = null;
             float volumeVariation;
 
-            lock (_lock)
+            try
             {
-                var key = GetBufferKey(keyType, keyEvent);
-                if (!_soundBuffers.TryGetValue(key, out var list) || list.Count == 0)
+                lock (_lock)
                 {
-                    // Fallback to regular key sound
-                    var fallbackKey = GetBufferKey(KeyType.Regular, keyEvent);
-                    if (_soundBuffers.TryGetValue(fallbackKey, out var fallbackList) && fallbackList.Count > 0)
+                    var key = GetBufferKey(keyType, keyEvent);
+                    if (!_soundBuffers.TryGetValue(key, out var list) || list.Count == 0)
                     {
-                        list = fallbackList;
+                        // Fallback to regular key sound
+                        var fallbackKey = GetBufferKey(KeyType.Regular, keyEvent);
+                        if (_soundBuffers.TryGetValue(fallbackKey, out var fallbackList) && fallbackList.Count > 0)
+                        {
+                            list = fallbackList;
+                        }
                     }
+
+                    if (list != null && list.Count > 0)
+                    {
+                        soundToPlay = list[_random.Next(list.Count)];
+                    }
+
+                    // Random volume variation between 0.9 and 1.0 for natural typing feel
+                    volumeVariation = (float)(0.90 + _random.NextDouble() * 0.10);
                 }
 
-                if (list != null && list.Count > 0)
+                if (soundToPlay != null)
                 {
-                    soundToPlay = list[_random.Next(list.Count)];
+                    var effectiveVolume = Volume * volumeVariation;
+                    var sampleProvider = new CachedSoundSampleProvider(soundToPlay, effectiveVolume);
+                    _mixer.AddMixerInput(sampleProvider);
                 }
-
-                // Random volume variation between 0.9 and 1.0 for natural typing feel
-                volumeVariation = (float)(0.90 + _random.NextDouble() * 0.10);
             }
-
-            if (soundToPlay != null)
+            catch (Exception ex)
             {
-                var effectiveVolume = Volume * volumeVariation;
-                var sampleProvider = new CachedSoundSampleProvider(soundToPlay, effectiveVolume);
-                _mixer.AddMixerInput(sampleProvider);
+                System.Diagnostics.Debug.WriteLine($"PlaySound error: {ex.Message}");
             }
         }
 
@@ -310,31 +396,38 @@ namespace Klackr.Services
             CachedSound? soundToPlay = null;
             float volumeVariation;
 
-            lock (_lock)
+            try
             {
-                var key = GetMouseBufferKey(button, eventType);
-                if (!_mouseSoundBuffers.TryGetValue(key, out var list) || list.Count == 0)
+                lock (_lock)
                 {
-                    var fallbackKey = GetMouseBufferKey(MouseButton.Left, eventType);
-                    if (_mouseSoundBuffers.TryGetValue(fallbackKey, out var fallbackList))
+                    var key = GetMouseBufferKey(button, eventType);
+                    if (!_mouseSoundBuffers.TryGetValue(key, out var list) || list.Count == 0)
                     {
-                        list = fallbackList;
+                        var fallbackKey = GetMouseBufferKey(MouseButton.Left, eventType);
+                        if (_mouseSoundBuffers.TryGetValue(fallbackKey, out var fallbackList))
+                        {
+                            list = fallbackList;
+                        }
                     }
+
+                    if (list != null && list.Count > 0)
+                    {
+                        soundToPlay = list[_random.Next(list.Count)];
+                    }
+
+                    volumeVariation = (float)(0.92 + _random.NextDouble() * 0.08);
                 }
 
-                if (list != null && list.Count > 0)
+                if (soundToPlay != null)
                 {
-                    soundToPlay = list[_random.Next(list.Count)];
+                    var effectiveVolume = MouseVolume * volumeVariation;
+                    var sampleProvider = new CachedSoundSampleProvider(soundToPlay, effectiveVolume);
+                    _mixer.AddMixerInput(sampleProvider);
                 }
-
-                volumeVariation = (float)(0.92 + _random.NextDouble() * 0.08);
             }
-
-            if (soundToPlay != null)
+            catch (Exception ex)
             {
-                var effectiveVolume = MouseVolume * volumeVariation;
-                var sampleProvider = new CachedSoundSampleProvider(soundToPlay, effectiveVolume);
-                _mixer.AddMixerInput(sampleProvider);
+                System.Diagnostics.Debug.WriteLine($"PlayMouseSound error: {ex.Message}");
             }
         }
 
@@ -350,6 +443,13 @@ namespace Klackr.Services
             _outputDevice?.Dispose();
             _soundBuffers.Clear();
             _mouseSoundBuffers.Clear();
+
+            // Shutdown MediaFoundation
+            try
+            {
+                MediaFoundationApi.Shutdown();
+            }
+            catch { }
         }
     }
 }

@@ -29,12 +29,26 @@ namespace Klackr.UI
 
             _keyboardHook.OnKeyEvent += (keyType, keyEvent) =>
             {
-                _soundEngine.PlaySound(keyType, keyEvent);
+                try
+                {
+                    _soundEngine.PlaySound(keyType, keyEvent);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"PlaySound error: {ex.Message}");
+                }
             };
 
             _mouseHook.OnMouseEvent += (button, mouseEvent) =>
             {
-                _soundEngine.PlayMouseSound(button, mouseEvent);
+                try
+                {
+                    _soundEngine.PlayMouseSound(button, mouseEvent);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"PlayMouseSound error: {ex.Message}");
+                }
             };
 
             _hotkeyManager.OnHotkeyPressed += ToggleEnabled;
@@ -43,8 +57,35 @@ namespace Klackr.UI
             var icoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "app.ico");
             if (File.Exists(icoPath))
             {
-                try { appIcon = new Icon(icoPath); } catch { }
+                try
+                {
+                    appIcon = new Icon(icoPath);
+                    System.Diagnostics.Debug.WriteLine($"Loaded icon from: {icoPath}");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to load icon from {icoPath}: {ex.Message}");
+                }
             }
+
+            // Fallback to embedded resource or system icon
+            if (appIcon == null)
+            {
+                try
+                {
+                    // Try to load from assembly resources
+                    var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                    var resourceName = "Klackr.app.ico";
+                    using var stream = assembly.GetManifestResourceStream(resourceName);
+                    if (stream != null)
+                    {
+                        appIcon = new Icon(stream);
+                        System.Diagnostics.Debug.WriteLine($"Loaded icon from embedded resource: {resourceName}");
+                    }
+                }
+                catch { }
+            }
+
             appIcon ??= SystemIcons.Application;
 
             _trayIcon = new NotifyIcon
@@ -190,6 +231,9 @@ namespace Klackr.UI
 
             menu.Items.Add(new ToolStripSeparator());
 
+            // Settings
+            menu.Items.Add(new ToolStripMenuItem("Settings...", null, (s, e) => OpenSettings()));
+
             // About
             menu.Items.Add(new ToolStripMenuItem("About Klackr...", null, (s, e) =>
             {
@@ -281,6 +325,20 @@ namespace Klackr.UI
             _soundEngine.Dispose();
             _trayIcon.Dispose();
             Application.Exit();
+        }
+
+        private void OpenSettings()
+        {
+            try
+            {
+                using var settingsForm = new SettingsForm(_soundEngine);
+                settingsForm.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Failed to open settings: {ex.Message}");
+                MessageBox.Show($"Failed to open settings: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

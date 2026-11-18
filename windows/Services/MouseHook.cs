@@ -37,6 +37,16 @@ namespace Klackr.Services
                 if (curModule != null)
                 {
                     _hookId = SetWindowsHookEx(WH_MOUSE_LL, _proc, GetModuleHandle(curModule.ModuleName), 0);
+                    if (_hookId == IntPtr.Zero)
+                    {
+                        int error = Marshal.GetLastWin32Error();
+                        System.Diagnostics.Debug.WriteLine($"Failed to install mouse hook. Error code: {error}");
+                        throw new System.ComponentModel.Win32Exception(error, "Failed to install low-level mouse hook. Run as administrator if needed.");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Mouse hook installed successfully. Hook ID: {_hookId}");
+                    }
                 }
             }
         }
@@ -52,33 +62,52 @@ namespace Klackr.Services
 
         private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
         {
-            if (nCode >= 0)
+            try
             {
-                int msg = wParam.ToInt32();
-                switch (msg)
+                if (nCode >= 0)
                 {
-                    case WM_LBUTTONDOWN:
-                        OnMouseEvent?.Invoke(MouseButton.Left, MouseEventType.Press);
-                        break;
-                    case WM_LBUTTONUP:
-                        OnMouseEvent?.Invoke(MouseButton.Left, MouseEventType.Release);
-                        break;
-                    case WM_RBUTTONDOWN:
-                        OnMouseEvent?.Invoke(MouseButton.Right, MouseEventType.Press);
-                        break;
-                    case WM_RBUTTONUP:
-                        OnMouseEvent?.Invoke(MouseButton.Right, MouseEventType.Release);
-                        break;
-                    case WM_MBUTTONDOWN:
-                        OnMouseEvent?.Invoke(MouseButton.Middle, MouseEventType.Press);
-                        break;
-                    case WM_MBUTTONUP:
-                        OnMouseEvent?.Invoke(MouseButton.Middle, MouseEventType.Release);
-                        break;
+                    int msg = wParam.ToInt32();
+                    switch (msg)
+                    {
+                        case WM_LBUTTONDOWN:
+                            InvokeSafe(MouseButton.Left, MouseEventType.Press);
+                            break;
+                        case WM_LBUTTONUP:
+                            InvokeSafe(MouseButton.Left, MouseEventType.Release);
+                            break;
+                        case WM_RBUTTONDOWN:
+                            InvokeSafe(MouseButton.Right, MouseEventType.Press);
+                            break;
+                        case WM_RBUTTONUP:
+                            InvokeSafe(MouseButton.Right, MouseEventType.Release);
+                            break;
+                        case WM_MBUTTONDOWN:
+                            InvokeSafe(MouseButton.Middle, MouseEventType.Press);
+                            break;
+                        case WM_MBUTTONUP:
+                            InvokeSafe(MouseButton.Middle, MouseEventType.Release);
+                            break;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Mouse hook callback error: {ex.Message}");
             }
 
             return CallNextHookEx(_hookId, nCode, wParam, lParam);
+        }
+
+        private void InvokeSafe(MouseButton button, MouseEventType eventType)
+        {
+            try
+            {
+                OnMouseEvent?.Invoke(button, eventType);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Mouse hook event error: {ex.Message}");
+            }
         }
 
         public void Dispose()
