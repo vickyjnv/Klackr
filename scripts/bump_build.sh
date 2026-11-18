@@ -4,7 +4,7 @@ set -eu
 
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 REPO_ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
-PROJECT_FILE="$REPO_ROOT/kutuk.xcodeproj/project.pbxproj"
+PROJECT_FILE="$REPO_ROOT/Klackr.xcodeproj/project.pbxproj"
 
 read_build_setting() {
   setting_name="$1"

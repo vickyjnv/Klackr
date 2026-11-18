@@ -1,6 +1,6 @@
 //
 //  HotKeyManager.swift
-//  kutuk
+//  Klackr
 //
 //  Global hotkey registration for toggle shortcut
 //

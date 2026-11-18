@@ -1,6 +1,6 @@
 //
 //  SoundEngine.swift
-//  kutuk
+//  Klackr
 //
 //  Audio engine for playing keyboard sounds with low latency
 //

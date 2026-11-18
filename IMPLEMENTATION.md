@@ -1,4 +1,4 @@
-# Kutuk – Implementation Reference
+# Klackr – Implementation Reference
 
 > Mechanical keyboard sound app for macOS
 
@@ -8,7 +8,7 @@
 
 ```mermaid
 graph TD
-    A[KutukApp] --> B[MenuBarExtra]
+    A[KlackrApp] --> B[MenuBarExtra]
     B --> C[MenuBarView]
     C --> D[SettingsManager]
     C --> E[SoundEngine]
@@ -21,10 +21,10 @@ graph TD
 ## File Structure
 
 ```
-kutuk/
-├── kutukApp.swift              # App entry, MenuBarExtra scene
+Klackr/
+├── KlackrApp.swift              # App entry, MenuBarExtra scene
 ├── Info.plist                  # LSUIElement=true (no dock icon)
-├── kutuk.entitlements          # App sandbox
+├── Klackr.entitlements          # App sandbox
 ├── Models/
 │   └── SoundPack.swift         # KeyType, KeyEvent, single-pack SoundPack struct
 ├── Services/
@@ -44,7 +44,7 @@ kutuk/
 
 ## Key Components
 
-### kutukApp.swift
+### KlackrApp.swift
 - Uses `MenuBarExtra` for menu bar presence
 - No `init()` code (causes crashes on early NSApp access)
 - No dock icon via `Info.plist` LSUIElement
@@ -105,10 +105,10 @@ fall back to the regular press/release sounds through `SoundPack.soundURLs`.
 
 ```bash
 # Command line
-xcodebuild -project kutuk.xcodeproj -scheme kutuk build
+xcodebuild -project Klackr.xcodeproj -scheme Klackr build
 
 # Or in Xcode
-# 1. Open kutuk.xcodeproj
+# 1. Open Klackr.xcodeproj
 # 2. ⇧⌘K to clean
 # 3. ⌘R to build and run
 ```

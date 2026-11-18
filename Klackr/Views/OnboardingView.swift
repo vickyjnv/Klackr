@@ -1,6 +1,6 @@
 //
 //  OnboardingView.swift
-//  kutuk
+//  Klackr
 //
 //  Permission request onboarding screen
 //

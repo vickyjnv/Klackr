@@ -1,13 +1,13 @@
 //
-//  kutukUITestsLaunchTests.swift
-//  kutukUITests
+//  KlackrUITestsLaunchTests.swift
+//  KlackrUITests
 //
 //  Created by Rajul Jain on 11/01/26.
 //
 
 import XCTest
 
-final class kutukUITestsLaunchTests: XCTestCase {
+final class KlackrUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

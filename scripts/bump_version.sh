@@ -5,8 +5,8 @@ set -eu
 SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 REPO_ROOT="$(CDPATH= cd -- "$SCRIPT_DIR/.." && pwd)"
 cd "$REPO_ROOT"
-PROJECT_FILE="kutuk.xcodeproj/project.pbxproj"
-PLIST_FILES="kutuk/Info.plist kutukTests/Info.plist kutukUITests/Info.plist"
+PROJECT_FILE="Klackr.xcodeproj/project.pbxproj"
+PLIST_FILES="Klackr/Info.plist KlackrTests/Info.plist KlackrUITests/Info.plist"
 
 read_build_setting() {
   setting_name="$1"

@@ -116,7 +116,7 @@ input {
 }
 
 .hero-media {
-  background-image: url("assets/kutuk-hero-image.jpg");
+  background-image: url("assets/klackr-hero-image.jpg");
   background-position: center top;
   background-size: cover;
   filter: saturate(0.55) contrast(0.98) brightness(0.75);

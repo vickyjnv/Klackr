@@ -1,6 +1,6 @@
 //
 //  HotKeyShortcut.swift
-//  kutuk
+//  Klackr
 //
 //  Persisted model for the global toggle shortcut
 //

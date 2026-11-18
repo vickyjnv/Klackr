@@ -1,6 +1,6 @@
 //
 //  AppCoordinator.swift
-//  kutuk
+//  Klackr
 //
 //  Wires app services together at launch
 //

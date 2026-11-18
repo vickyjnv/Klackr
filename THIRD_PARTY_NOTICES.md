@@ -2,16 +2,16 @@
 
 ## Mechvibes audio
 
-Kutuk bundles keyboard audio from the MIT-licensed
+Klackr bundles keyboard audio from the MIT-licensed
 [`hainguyents13/mechvibes`](https://github.com/hainguyents13/mechvibes)
 repository.
 
-Kutuk bundles keyboard sounds from two Mechvibes travel sound packs.
+Klackr bundles keyboard sounds from two Mechvibes travel sound packs.
 
 The default `Cherry MX Brown` pack comes from `mxbrown-travel`, whose upstream
 config names it `MX Brown - Full Travel`. This pack includes regular,
 spacebar, enter, and backspace audio files. The source files were renamed to
-Kutuk's bundled sound-file convention:
+Klackr's bundled sound-file convention:
 
 - `press/GENERIC_R0.mp3` -> `cherry-mx-brown_regular_press_1.mp3`
 - `press/GENERIC_R1.mp3` -> `cherry-mx-brown_regular_press_2.mp3`
@@ -28,7 +28,7 @@ Kutuk's bundled sound-file convention:
 
 The optional `Cherry MX Blue` pack comes from `mxblue-travel`, whose upstream
 config names it `MX Blue - Full Travel`. The current upstream folder includes
-regular press and release audio only, so Kutuk uses its regular-key fallback
+regular press and release audio only, so Klackr uses its regular-key fallback
 for spacebar, enter, backspace, and modifier keys in this pack:
 
 - `press/GENERIC_R0.mp3` -> `cherry-mx-blue_regular_press_1.mp3`

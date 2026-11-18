@@ -1,6 +1,6 @@
 //
-//  kutukTests.swift
-//  kutukTests
+//  KlackrTests.swift
+//  KlackrTests
 //
 //  Created by Rajul Jain on 11/01/26.
 //
@@ -8,7 +8,7 @@
 import Testing
 import Carbon.HIToolbox
 import CryptoKit
-@testable import kutuk
+@testable import Klackr
 
 private struct MockLaunchAtLoginController: LaunchAtLoginControlling {
     var isEnabled: Bool = false
@@ -16,7 +16,7 @@ private struct MockLaunchAtLoginController: LaunchAtLoginControlling {
     func setEnabled(_ isEnabled: Bool) throws {}
 }
 
-struct kutukTests {
+struct KlackrTests {
     @Test func openSourceBuildExposesBundledPacks() {
         let expectedIds = [
             "cherry-mx-brown",
@@ -41,7 +41,7 @@ struct kutukTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
         let soundsDirectory = repoRoot
-            .appendingPathComponent("kutuk")
+            .appendingPathComponent("Klackr")
             .appendingPathComponent("Resources")
             .appendingPathComponent("Sounds")
         
@@ -140,7 +140,7 @@ struct kutukTests {
     }
     
     @Test func selectedBlueSoundPackPersists() {
-        let defaults = UserDefaults(suiteName: "kutuk-tests-\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "klackr-tests-\(UUID().uuidString)")!
         defaults.set("cherry-mx-blue", forKey: "selectedSoundPackId")
         
         let settings = SettingsManager(
@@ -154,7 +154,7 @@ struct kutukTests {
     }
     
     @Test func unsupportedSavedPackFallsBackToBrown() {
-        let defaults = UserDefaults(suiteName: "kutuk-tests-\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "klackr-tests-\(UUID().uuidString)")!
         defaults.set("buckling-spring", forKey: "selectedSoundPackId")
         
         let settings = SettingsManager(
@@ -168,7 +168,7 @@ struct kutukTests {
     }
     
     @Test func hotKeyShortcutPersistsAcrossReloads() {
-        let defaults = UserDefaults(suiteName: "kutuk-tests-\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "klackr-tests-\(UUID().uuidString)")!
         let launchController = MockLaunchAtLoginController()
         
         let settings = SettingsManager(
@@ -208,7 +208,7 @@ struct kutukTests {
     }
     
     @Test func mouseSettingsPersistAcrossReloads() {
-        let defaults = UserDefaults(suiteName: "kutuk-mouse-tests-\(UUID().uuidString)")!
+        let defaults = UserDefaults(suiteName: "klackr-mouse-tests-\(UUID().uuidString)")!
         let launchController = MockLaunchAtLoginController()
         
         let settings = SettingsManager(

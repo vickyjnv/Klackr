@@ -1,5 +1,5 @@
-PROJECT := kutuk.xcodeproj
-SCHEME := kutuk
+PROJECT := Klackr.xcodeproj
+SCHEME := Klackr
 CONFIGURATION ?= Release
 DESTINATION ?= generic/platform=macOS
 DERIVED_DATA := $(CURDIR)/build/DerivedData

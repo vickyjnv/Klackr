@@ -12,70 +12,70 @@
 			containerPortal = D084F3852F140A9F000178B2 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = D084F38C2F140A9F000178B2;
-			remoteInfo = kutuk;
+			remoteInfo = Klackr;
 		};
 		D084F3A72F140AA0000178B2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D084F3852F140A9F000178B2 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = D084F38C2F140A9F000178B2;
-			remoteInfo = kutuk;
+			remoteInfo = Klackr;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		D084F38D2F140A9F000178B2 /* Klackr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Klackr.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D084F39C2F140AA0000178B2 /* kutukTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = kutukTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		D084F3A62F140AA0000178B2 /* kutukUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = kutukUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D084F39C2F140AA0000178B2 /* KlackrTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KlackrTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D084F3A62F140AA0000178B2 /* KlackrUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KlackrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		D084F3AA2F140AA1000178B2 /* Exceptions for "kutuk" folder in "kutuk" target */ = {
+		D084F3AA2F140AA1000178B2 /* Exceptions for "Klackr" folder in "Klackr" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D084F38C2F140A9F000178B2 /* kutuk */;
+			target = D084F38C2F140A9F000178B2 /* Klackr */;
 		};
-		D084F3AB2F140AA1000178B2 /* Exceptions for "kutukTests" folder in "kutukTests" target */ = {
+		D084F3AB2F140AA1000178B2 /* Exceptions for "KlackrTests" folder in "KlackrTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D084F39B2F140AA0000178B2 /* kutukTests */;
+			target = D084F39B2F140AA0000178B2 /* KlackrTests */;
 		};
-		D084F3AC2F140AA1000178B2 /* Exceptions for "kutukUITests" folder in "kutukUITests" target */ = {
+		D084F3AC2F140AA1000178B2 /* Exceptions for "KlackrUITests" folder in "KlackrUITests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = D084F3A52F140AA0000178B2 /* kutukUITests */;
+			target = D084F3A52F140AA0000178B2 /* KlackrUITests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		D084F38F2F140A9F000178B2 /* kutuk */ = {
+		D084F38F2F140A9F000178B2 /* Klackr */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D084F3AA2F140AA1000178B2 /* Exceptions for "kutuk" folder in "kutuk" target */,
+				D084F3AA2F140AA1000178B2 /* Exceptions for "Klackr" folder in "Klackr" target */,
 			);
-			path = kutuk;
+			path = Klackr;
 			sourceTree = "<group>";
 		};
-		D084F39F2F140AA0000178B2 /* kutukTests */ = {
+		D084F39F2F140AA0000178B2 /* KlackrTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D084F3AB2F140AA1000178B2 /* Exceptions for "kutukTests" folder in "kutukTests" target */,
+				D084F3AB2F140AA1000178B2 /* Exceptions for "KlackrTests" folder in "KlackrTests" target */,
 			);
-			path = kutukTests;
+			path = KlackrTests;
 			sourceTree = "<group>";
 		};
-		D084F3A92F140AA0000178B2 /* kutukUITests */ = {
+		D084F3A92F140AA0000178B2 /* KlackrUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				D084F3AC2F140AA1000178B2 /* Exceptions for "kutukUITests" folder in "kutukUITests" target */,
+				D084F3AC2F140AA1000178B2 /* Exceptions for "KlackrUITests" folder in "KlackrUITests" target */,
 			);
-			path = kutukUITests;
+			path = KlackrUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -108,9 +108,9 @@
 		D084F3842F140A9F000178B2 = {
 			isa = PBXGroup;
 			children = (
-				D084F38F2F140A9F000178B2 /* kutuk */,
-				D084F39F2F140AA0000178B2 /* kutukTests */,
-				D084F3A92F140AA0000178B2 /* kutukUITests */,
+				D084F38F2F140A9F000178B2 /* Klackr */,
+				D084F39F2F140AA0000178B2 /* KlackrTests */,
+				D084F3A92F140AA0000178B2 /* KlackrUITests */,
 				D084F38E2F140A9F000178B2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -119,8 +119,8 @@
 			isa = PBXGroup;
 			children = (
 				D084F38D2F140A9F000178B2 /* Klackr.app */,
-				D084F39C2F140AA0000178B2 /* kutukTests.xctest */,
-				D084F3A62F140AA0000178B2 /* kutukUITests.xctest */,
+				D084F39C2F140AA0000178B2 /* KlackrTests.xctest */,
+				D084F3A62F140AA0000178B2 /* KlackrUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -128,9 +128,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		D084F38C2F140A9F000178B2 /* kutuk */ = {
+		D084F38C2F140A9F000178B2 /* Klackr */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D084F3B02F140AA0000178B2 /* Build configuration list for PBXNativeTarget "kutuk" */;
+			buildConfigurationList = D084F3B02F140AA0000178B2 /* Build configuration list for PBXNativeTarget "Klackr" */;
 			buildPhases = (
 				D084F3892F140A9F000178B2 /* Sources */,
 				D084F38A2F140A9F000178B2 /* Frameworks */,
@@ -141,18 +141,18 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D084F38F2F140A9F000178B2 /* kutuk */,
+				D084F38F2F140A9F000178B2 /* Klackr */,
 			);
-			name = kutuk;
+			name = Klackr;
 			packageProductDependencies = (
 			);
 			productName = Klackr;
 			productReference = D084F38D2F140A9F000178B2 /* Klackr.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D084F39B2F140AA0000178B2 /* kutukTests */ = {
+		D084F39B2F140AA0000178B2 /* KlackrTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D084F3B32F140AA0000178B2 /* Build configuration list for PBXNativeTarget "kutukTests" */;
+			buildConfigurationList = D084F3B32F140AA0000178B2 /* Build configuration list for PBXNativeTarget "KlackrTests" */;
 			buildPhases = (
 				D084F3982F140AA0000178B2 /* Sources */,
 				D084F3992F140AA0000178B2 /* Frameworks */,
@@ -164,18 +164,18 @@
 				D084F39E2F140AA0000178B2 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				D084F39F2F140AA0000178B2 /* kutukTests */,
+				D084F39F2F140AA0000178B2 /* KlackrTests */,
 			);
-			name = kutukTests;
+			name = KlackrTests;
 			packageProductDependencies = (
 			);
-			productName = kutukTests;
-			productReference = D084F39C2F140AA0000178B2 /* kutukTests.xctest */;
+			productName = KlackrTests;
+			productReference = D084F39C2F140AA0000178B2 /* KlackrTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		D084F3A52F140AA0000178B2 /* kutukUITests */ = {
+		D084F3A52F140AA0000178B2 /* KlackrUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D084F3B62F140AA0000178B2 /* Build configuration list for PBXNativeTarget "kutukUITests" */;
+			buildConfigurationList = D084F3B62F140AA0000178B2 /* Build configuration list for PBXNativeTarget "KlackrUITests" */;
 			buildPhases = (
 				D084F3A22F140AA0000178B2 /* Sources */,
 				D084F3A32F140AA0000178B2 /* Frameworks */,
@@ -187,13 +187,13 @@
 				D084F3A82F140AA0000178B2 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				D084F3A92F140AA0000178B2 /* kutukUITests */,
+				D084F3A92F140AA0000178B2 /* KlackrUITests */,
 			);
-			name = kutukUITests;
+			name = KlackrUITests;
 			packageProductDependencies = (
 			);
-			productName = kutukUITests;
-			productReference = D084F3A62F140AA0000178B2 /* kutukUITests.xctest */;
+			productName = KlackrUITests;
+			productReference = D084F3A62F140AA0000178B2 /* KlackrUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -219,7 +219,7 @@
 					};
 				};
 			};
-			buildConfigurationList = D084F3882F140A9F000178B2 /* Build configuration list for PBXProject "kutuk" */;
+			buildConfigurationList = D084F3882F140A9F000178B2 /* Build configuration list for PBXProject "Klackr" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -233,9 +233,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D084F38C2F140A9F000178B2 /* kutuk */,
-				D084F39B2F140AA0000178B2 /* kutukTests */,
-				D084F3A52F140AA0000178B2 /* kutukUITests */,
+				D084F38C2F140A9F000178B2 /* Klackr */,
+				D084F39B2F140AA0000178B2 /* KlackrTests */,
+				D084F3A52F140AA0000178B2 /* KlackrUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -291,12 +291,12 @@
 /* Begin PBXTargetDependency section */
 		D084F39E2F140AA0000178B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D084F38C2F140A9F000178B2 /* kutuk */;
+			target = D084F38C2F140A9F000178B2 /* Klackr */;
 			targetProxy = D084F39D2F140AA0000178B2 /* PBXContainerItemProxy */;
 		};
 		D084F3A82F140AA0000178B2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = D084F38C2F140A9F000178B2 /* kutuk */;
+			target = D084F38C2F140A9F000178B2 /* Klackr */;
 			targetProxy = D084F3A72F140AA0000178B2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -435,7 +435,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				INFOPLIST_FILE = kutuk/Info.plist;
+				INFOPLIST_FILE = Klackr/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -443,7 +443,7 @@
 				);
 				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.vicky.klackr;
-				PRODUCT_MODULE_NAME = kutuk;
+				PRODUCT_MODULE_NAME = Klackr;
 				PRODUCT_NAME = Klackr;
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -468,7 +468,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				INFOPLIST_FILE = kutuk/Info.plist;
+				INFOPLIST_FILE = Klackr/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -476,7 +476,7 @@
 				);
 				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.vicky.klackr;
-				PRODUCT_MODULE_NAME = kutuk;
+				PRODUCT_MODULE_NAME = Klackr;
 				PRODUCT_NAME = Klackr;
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -495,10 +495,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7F4UPX4YK4;
-				INFOPLIST_FILE = kutukTests/Info.plist;
+				INFOPLIST_FILE = KlackrTests/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.irajul.kutukTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.vicky.klackrTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -516,10 +516,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7F4UPX4YK4;
-				INFOPLIST_FILE = kutukTests/Info.plist;
+				INFOPLIST_FILE = KlackrTests/Info.plist;
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.irajul.kutukTests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.vicky.klackrTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -536,16 +536,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7F4UPX4YK4;
-				INFOPLIST_FILE = kutukUITests/Info.plist;
+				INFOPLIST_FILE = KlackrUITests/Info.plist;
 				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.irajul.kutukUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.vicky.klackrUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = kutuk;
+				TEST_TARGET_NAME = Klackr;
 			};
 			name = Debug;
 		};
@@ -555,23 +555,23 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 7F4UPX4YK4;
-				INFOPLIST_FILE = kutukUITests/Info.plist;
+				INFOPLIST_FILE = KlackrUITests/Info.plist;
 				MARKETING_VERSION = 1.0.3;
-				PRODUCT_BUNDLE_IDENTIFIER = io.github.irajul.kutukUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.vicky.klackrUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = kutuk;
+				TEST_TARGET_NAME = Klackr;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D084F3882F140A9F000178B2 /* Build configuration list for PBXProject "kutuk" */ = {
+		D084F3882F140A9F000178B2 /* Build configuration list for PBXProject "Klackr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D084F3AE2F140AA0000178B2 /* Debug */,
@@ -580,7 +580,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D084F3B02F140AA0000178B2 /* Build configuration list for PBXNativeTarget "kutuk" */ = {
+		D084F3B02F140AA0000178B2 /* Build configuration list for PBXNativeTarget "Klackr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D084F3B12F140AA0000178B2 /* Debug */,
@@ -589,7 +589,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D084F3B32F140AA0000178B2 /* Build configuration list for PBXNativeTarget "kutukTests" */ = {
+		D084F3B32F140AA0000178B2 /* Build configuration list for PBXNativeTarget "KlackrTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D084F3B42F140AA0000178B2 /* Debug */,
@@ -598,7 +598,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D084F3B62F140AA0000178B2 /* Build configuration list for PBXNativeTarget "kutukUITests" */ = {
+		D084F3B62F140AA0000178B2 /* Build configuration list for PBXNativeTarget "KlackrUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D084F3B72F140AA0000178B2 /* Debug */,

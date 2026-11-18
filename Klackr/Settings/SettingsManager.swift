@@ -1,6 +1,6 @@
 //
 //  SettingsManager.swift
-//  kutuk
+//  Klackr
 //
 //  Manages app settings with UserDefaults persistence
 //

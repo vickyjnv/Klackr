@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  kutuk
+//  Klackr
 //
 //  App lifecycle management
 //

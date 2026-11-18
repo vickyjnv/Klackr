@@ -1,6 +1,6 @@
 //
 //  MenuBarView.swift
-//  kutuk
+//  Klackr
 //
 //  Main menu bar dropdown UI
 //

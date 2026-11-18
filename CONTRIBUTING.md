@@ -1,11 +1,11 @@
-# Contributing to Kutuk
+# Contributing to Klackr
 
-Thanks for your interest in contributing to Kutuk! Here's how to get started.
+Thanks for your interest in contributing to Klackr! Here's how to get started.
 
 ## Development Setup
 
 1. **Requirements**: Xcode 15+ and macOS 14+
-2. Clone the repo and open `kutuk.xcodeproj` in Xcode
+2. Clone the repo and open `Klackr.xcodeproj` in Xcode
 3. Build and run with `Cmd+R`, or use `make build` from the terminal
 
 ## Building from Terminal
@@ -26,8 +26,8 @@ make clean
 
 ## Project Structure
 
-- `kutuk/` — Main source directory
-  - `kutukApp.swift` — App entry point
+- `Klackr/` — Main source directory
+  - `KlackrApp.swift` — App entry point
   - `Views/` — SwiftUI menu bar UI
   - `Services/` — Keyboard monitoring, audio engine, hotkey management
   - `Settings/` — UserDefaults persistence
@@ -37,7 +37,7 @@ make clean
 
 ## Adding a Sound Pack
 
-1. Add MP3, WAV, or CAF files under `kutuk/Resources/Sounds/`
+1. Add MP3, WAV, or CAF files under `Klackr/Resources/Sounds/`
 2. Follow the naming convention: `{packId}_{keyType}_{event}_{variation}.{ext}`
 3. Register the pack in `SoundPack.swift`
 

@@ -1,6 +1,6 @@
 //
 //  KeyboardMonitor.swift
-//  kutuk
+//  Klackr
 //
 //  Global keyboard monitoring using CGEvent tap
 //
