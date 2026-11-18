@@ -4,17 +4,18 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  release:
-    name: Build & Release Universal Binary
-    runs-on: macos-26
+  build-macos:
+    name: Build macOS DMG
+    runs-on: macos-14
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Show Xcode version
         run: xcodebuild -version
@@ -22,7 +23,9 @@ jobs:
       - name: Sync release version and build number
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
-          ./scripts/bump_version.sh "$VERSION" "$GITHUB_RUN_NUMBER"
+          if [ -n "$VERSION" ] && [ "$VERSION" != "$GITHUB_REF_NAME" ]; then
+            ./scripts/bump_version.sh "$VERSION" "$GITHUB_RUN_NUMBER"
+          fi
 
       - name: Build Universal Binary
         run: make build
@@ -36,11 +39,66 @@ jobs:
       - name: Create DMG
         run: make dmg
 
+      - name: Upload DMG Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: dist/Klackr-Release.dmg
+          if-no-files-found: error
+
+  build-windows:
+    name: Build Windows Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore windows/Klackr.csproj
+
+      - name: Publish Single-File Executable
+        run: |
+          dotnet publish windows/Klackr.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o dist/windows
+
+      - name: Create ZIP bundle
+        run: |
+          Compress-Archive -Path dist/windows/* -DestinationPath dist/Klackr-Windows-x64.zip
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-zip
+          path: dist/Klackr-Windows-x64.zip
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub Release
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download macOS DMG
+        uses: actions/download-artifact@v4
+        with:
+          name: macos-dmg
+          path: release-assets
+
+      - name: Download Windows ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-zip
+          path: release-assets
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            dist/Klackr-Release.dmg
+            release-assets/Klackr-Release.dmg
+            release-assets/Klackr-Windows-x64.zip
           generate_release_notes: true
           draft: false
           prerelease: false
