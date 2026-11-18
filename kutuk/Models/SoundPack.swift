@@ -160,16 +160,58 @@ extension SoundPack {
         description: "Crisp, snappy modern tactile"
     )
     
+    static let holyPanda = SoundPack(
+        id: "holy-panda",
+        name: "Holy Panda",
+        description: "Iconic round tactile bump, deep thock"
+    )
+    
+    static let kailhBoxWhite = SoundPack(
+        id: "kailh-box-white",
+        name: "Kailh Box White",
+        description: "Sharp, clean click-bar actuation"
+    )
+    
+    static let nkCream = SoundPack(
+        id: "nk-cream",
+        name: "NovelKeys Cream",
+        description: "All-POM smooth marbly clack"
+    )
+    
+    static let tealiosV2 = SoundPack(
+        id: "tealios-v2",
+        name: "Tealios V2",
+        description: "Boutique ultra-smooth linear"
+    )
+    
+    static let ibmBucklingSpring = SoundPack(
+        id: "ibm-buckling-spring",
+        name: "IBM Buckling Spring",
+        description: "Model M vintage heavy acoustic legend"
+    )
+    
+    static let steelseriesApexPro = SoundPack(
+        id: "steelseries-apex-pro",
+        name: "SteelSeries Apex Pro",
+        description: "Magnetic OmniPoint smooth linear"
+    )
+    
     static let defaultPack = cherryMXBrown
     
-    /// All bundled sound packs included with the app
+    /// All bundled sound packs included with the app (12 top-rated switches)
     static let bundledPacks: [SoundPack] = [
         .cherryMXBrown,
         .cherryMXBlue,
         .cherryMXRed,
         .cherryMXBlack,
         .toprePurple,
-        .everglideOreo
+        .everglideOreo,
+        .holyPanda,
+        .kailhBoxWhite,
+        .nkCream,
+        .tealiosV2,
+        .ibmBucklingSpring,
+        .steelseriesApexPro
     ]
     
     /// Dynamically discovered user packs from Application Support
@@ -314,14 +356,64 @@ extension MouseSoundPack {
         description: "Muted, dampened soft click for quiet focus"
     )
     
+    static let intelliMouse = MouseSoundPack(
+        id: "mouse-intellimouse",
+        name: "Microsoft IntelliMouse",
+        description: "Legendary deep ergonomic tactile click"
+    )
+    
+    static let g203 = MouseSoundPack(
+        id: "mouse-g203",
+        name: "Logitech G203 Prodigy",
+        description: "Crisp, springy budget gaming click"
+    )
+    
+    static let bloody = MouseSoundPack(
+        id: "mouse-bloody",
+        name: "A4Tech Bloody LK Optical",
+        description: "Ultra-fast infrared optical switch"
+    )
+    
+    static let rapture = MouseSoundPack(
+        id: "mouse-rapture",
+        name: "Rapture Venom",
+        description: "Heavy mechanical tactile microswitch"
+    )
+    
+    static let trust = MouseSoundPack(
+        id: "mouse-trust",
+        name: "Trust GXT Gaming",
+        description: "Solid, punchy gaming click"
+    )
+    
+    static let apple = MouseSoundPack(
+        id: "mouse-apple",
+        name: "Apple Magic Mouse",
+        description: "Acoustic glass-aluminum surface click"
+    )
+    
+    static let kailhGM = MouseSoundPack(
+        id: "mouse-kailh-gm",
+        name: "Kailh GM 8.0 Black Mamba",
+        description: "High-tension 80M esports microswitch"
+    )
+    
     static let defaultMousePack = omron
     
+    /// All bundled mouse packs included with the app (12 top-rated switches)
     static let bundledPacks: [MouseSoundPack] = [
         .omron,
         .superlight,
         .razerOptical,
         .glorious,
-        .silent
+        .silent,
+        .intelliMouse,
+        .g203,
+        .bloody,
+        .rapture,
+        .trust,
+        .apple,
+        .kailhGM
     ]
     
     static var customPacks: [MouseSoundPack] {

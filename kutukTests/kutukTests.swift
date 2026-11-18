@@ -18,7 +18,20 @@ private struct MockLaunchAtLoginController: LaunchAtLoginControlling {
 
 struct kutukTests {
     @Test func openSourceBuildExposesBundledPacks() {
-        let expectedIds = ["cherry-mx-brown", "cherry-mx-blue", "cherry-mx-red", "cherry-mx-black", "topre-purple", "everglide-oreo"]
+        let expectedIds = [
+            "cherry-mx-brown",
+            "cherry-mx-blue",
+            "cherry-mx-red",
+            "cherry-mx-black",
+            "topre-purple",
+            "everglide-oreo",
+            "holy-panda",
+            "kailh-box-white",
+            "nk-cream",
+            "tealios-v2",
+            "ibm-buckling-spring",
+            "steelseries-apex-pro"
+        ]
         #expect(SoundPack.bundledPacks.map(\.id) == expectedIds)
         #expect(SoundPack.defaultPack.id == SoundPack.cherryMXBrown.id)
     }
@@ -176,7 +189,20 @@ struct kutukTests {
     }
     
     @Test func mouseSoundPacksAreConfigured() {
-        let expectedMouseIds = ["mouse-omron", "mouse-superlight", "mouse-razer", "mouse-glorious", "mouse-silent"]
+        let expectedMouseIds = [
+            "mouse-omron",
+            "mouse-superlight",
+            "mouse-razer",
+            "mouse-glorious",
+            "mouse-silent",
+            "mouse-intellimouse",
+            "mouse-g203",
+            "mouse-bloody",
+            "mouse-rapture",
+            "mouse-trust",
+            "mouse-apple",
+            "mouse-kailh-gm"
+        ]
         #expect(MouseSoundPack.bundledPacks.map(\.id) == expectedMouseIds)
         #expect(MouseSoundPack.defaultMousePack.id == "mouse-omron")
     }

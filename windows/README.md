@@ -1,16 +1,17 @@
 # Klackr for Windows
 
-Mechanical keyboard sounds for your Windows PC. Klackr plays satisfying Cherry MX Brown and Cherry MX Blue mechanical keyboard sounds as you type, running quietly in your Windows system tray.
+Mechanical keyboard and mouse click sounds for your Windows PC. Klackr plays satisfying tactile keystrokes and microswitch clicks as you type and navigate, running quietly in your Windows system tray.
 
 ---
 
 ## Features
 
-- **Cherry MX Brown & Blue sound packs** with natural pitch & volume variation.
-- **Ultra-low latency** polyphonic audio engine.
+- **12 Mechanical Keyboard Packs**: Cherry MX Brown, Blue, Red, Black, Topre Purple, Everglide Oreo, Holy Panda, Kailh Box White, NK Cream, Tealios V2, IBM Buckling Spring, and SteelSeries Apex Pro.
+- **12 Mouse Switch Packs**: Classic Omron, Logitech Superlight, Razer Optical, Glorious Kailh, Silent Office, Microsoft IntelliMouse, Logitech G203, A4Tech Bloody Optical, Rapture Venom, Trust GXT, Apple Magic Mouse, and Kailh GM 8.0.
+- **Ultra-low latency** polyphonic audio engine with dedicated channels for typing and mouse clicks.
 - **System Tray application**: Runs quietly in the notification area with a right-click menu.
 - **Global Hotkey toggle**: `Alt + Ctrl + K` to quickly mute/unmute anytime.
-- **Volume Control**: Easily adjust sound level.
+- **Independent Volume Controls**: Easily adjust sound levels for keyboard and mouse.
 - **Launch on Startup**: Optional one-click toggle to launch with Windows.
 
 ---

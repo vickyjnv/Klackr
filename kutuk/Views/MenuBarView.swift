@@ -29,31 +29,34 @@ struct MenuBarView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            toggleSection
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 0) {
+                toggleSection
 
-            Divider().padding(.vertical, 4)
+                Divider().padding(.vertical, 4)
 
-            volumeSection
+                volumeSection
 
-            Divider().padding(.vertical, 4)
+                Divider().padding(.vertical, 4)
 
-            soundPackSection
+                soundPackSection
 
-            Divider().padding(.vertical, 4)
+                Divider().padding(.vertical, 4)
 
-            mouseSection
+                mouseSection
 
-            Divider().padding(.vertical, 4)
+                Divider().padding(.vertical, 4)
 
-            settingsSection
+                settingsSection
 
-            Divider().padding(.vertical, 4)
+                Divider().padding(.vertical, 4)
 
-            footerSection
+                footerSection
+            }
+            .padding(.vertical, 8)
         }
-        .padding(.vertical, 8)
-        .frame(width: 300)
+        .frame(width: 310)
+        .frame(maxHeight: 560)
         .onAppear {
             syncPermissionState()
             startPermissionPollingIfNeeded()

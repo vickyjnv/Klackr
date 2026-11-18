@@ -22,7 +22,13 @@ namespace Klackr.Models
         CherryMXRed,
         CherryMXBlack,
         ToprePurple,
-        EverglideOreo
+        EverglideOreo,
+        HolyPanda,
+        KailhBoxWhite,
+        NKCream,
+        TealiosV2,
+        IBMBucklingSpring,
+        SteelSeriesApexPro
     }
 
     public enum MouseButton
@@ -44,6 +50,13 @@ namespace Klackr.Models
         LogitechSuperlight,
         RazerOptical,
         GloriousModelO,
-        SilentOffice
+        SilentOffice,
+        IntelliMouse,
+        LogitechG203,
+        BloodyOptical,
+        RaptureVenom,
+        TrustGXT,
+        AppleMagic,
+        KailhGM8
     }
 }

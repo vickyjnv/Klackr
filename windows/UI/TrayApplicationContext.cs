@@ -97,7 +97,13 @@ namespace Klackr.UI
                 ("Cherry MX Red (Smooth Linear)", SoundPackType.CherryMXRed),
                 ("Cherry MX Black (Heavy Linear)", SoundPackType.CherryMXBlack),
                 ("Topre Purple Hybrid (Thock)", SoundPackType.ToprePurple),
-                ("Everglide Oreo (Snappy Tactile)", SoundPackType.EverglideOreo)
+                ("Everglide Oreo (Snappy Tactile)", SoundPackType.EverglideOreo),
+                ("Holy Panda (Deep Thock)", SoundPackType.HolyPanda),
+                ("Kailh Box White (Click Bar)", SoundPackType.KailhBoxWhite),
+                ("NovelKeys Cream (POM Clack)", SoundPackType.NKCream),
+                ("Tealios V2 (Smooth Linear)", SoundPackType.TealiosV2),
+                ("IBM Buckling Spring (Vintage)", SoundPackType.IBMBucklingSpring),
+                ("SteelSeries Apex Pro (OmniPoint)", SoundPackType.SteelSeriesApexPro)
             };
 
             foreach (var p in packs)
@@ -152,7 +158,14 @@ namespace Klackr.UI
                 ("Logitech G Pro Superlight", MouseSoundPackType.LogitechSuperlight),
                 ("Razer Optical Switch", MouseSoundPackType.RazerOptical),
                 ("Glorious Model O", MouseSoundPackType.GloriousModelO),
-                ("Silent Office Tactile", MouseSoundPackType.SilentOffice)
+                ("Silent Office Tactile", MouseSoundPackType.SilentOffice),
+                ("Microsoft IntelliMouse", MouseSoundPackType.IntelliMouse),
+                ("Logitech G203 Prodigy", MouseSoundPackType.LogitechG203),
+                ("A4Tech Bloody LK Optical", MouseSoundPackType.BloodyOptical),
+                ("Rapture Venom Mechanical", MouseSoundPackType.RaptureVenom),
+                ("Trust GXT Gaming", MouseSoundPackType.TrustGXT),
+                ("Apple Magic Mouse", MouseSoundPackType.AppleMagic),
+                ("Kailh GM 8.0 Black Mamba", MouseSoundPackType.KailhGM8)
             };
 
             foreach (var mp in mousePacks)

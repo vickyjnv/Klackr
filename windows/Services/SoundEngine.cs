@@ -126,6 +126,12 @@ namespace Klackr.Services
                     SoundPackType.CherryMXBlack => "cherry-mx-black",
                     SoundPackType.ToprePurple => "topre-purple",
                     SoundPackType.EverglideOreo => "everglide-oreo",
+                    SoundPackType.HolyPanda => "holy-panda",
+                    SoundPackType.KailhBoxWhite => "kailh-box-white",
+                    SoundPackType.NKCream => "nk-cream",
+                    SoundPackType.TealiosV2 => "tealios-v2",
+                    SoundPackType.IBMBucklingSpring => "ibm-buckling-spring",
+                    SoundPackType.SteelSeriesApexPro => "steelseries-apex-pro",
                     _ => "cherry-mx-brown"
                 };
 
@@ -177,6 +183,13 @@ namespace Klackr.Services
                     MouseSoundPackType.RazerOptical => "mouse-razer",
                     MouseSoundPackType.GloriousModelO => "mouse-glorious",
                     MouseSoundPackType.SilentOffice => "mouse-silent",
+                    MouseSoundPackType.IntelliMouse => "mouse-intellimouse",
+                    MouseSoundPackType.LogitechG203 => "mouse-g203",
+                    MouseSoundPackType.BloodyOptical => "mouse-bloody",
+                    MouseSoundPackType.RaptureVenom => "mouse-rapture",
+                    MouseSoundPackType.TrustGXT => "mouse-trust",
+                    MouseSoundPackType.AppleMagic => "mouse-apple",
+                    MouseSoundPackType.KailhGM8 => "mouse-kailh-gm",
                     _ => "mouse-omron"
                 };
 

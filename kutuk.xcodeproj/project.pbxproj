@@ -24,7 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D084F38D2F140A9F000178B2 /* Kutuk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Kutuk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D084F38D2F140A9F000178B2 /* Klackr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Klackr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D084F39C2F140AA0000178B2 /* kutukTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = kutukTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D084F3A62F140AA0000178B2 /* kutukUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = kutukUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -118,7 +118,7 @@
 		D084F38E2F140A9F000178B2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D084F38D2F140A9F000178B2 /* Kutuk.app */,
+				D084F38D2F140A9F000178B2 /* Klackr.app */,
 				D084F39C2F140AA0000178B2 /* kutukTests.xctest */,
 				D084F3A62F140AA0000178B2 /* kutukUITests.xctest */,
 			);
@@ -146,8 +146,8 @@
 			name = kutuk;
 			packageProductDependencies = (
 			);
-			productName = Kutuk;
-			productReference = D084F38D2F140A9F000178B2 /* Kutuk.app */;
+			productName = Klackr;
+			productReference = D084F38D2F140A9F000178B2 /* Klackr.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D084F39B2F140AA0000178B2 /* kutukTests */ = {
@@ -505,7 +505,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kutuk.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Kutuk";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Klackr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Klackr";
 			};
 			name = Debug;
 		};
@@ -526,7 +526,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Kutuk.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Kutuk";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Klackr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Klackr";
 			};
 			name = Release;
 		};
